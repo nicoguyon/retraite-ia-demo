@@ -1,0 +1,3151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RetraiteIA — Bilan retraite assisté par IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue-900: #1e3a5f;
+  --blue-600: #2563eb;
+  --blue-500: #3b82f6;
+  --blue-300: #93c5fd;
+  --blue-100: #dbeafe;
+  --blue-50: #f0f7ff;
+  --white: #ffffff;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --red-500: #ef4444;
+  --red-50: #fef2f2;
+  --red-100: #fee2e2;
+  --orange-500: #f97316;
+  --orange-50: #fff7ed;
+  --orange-100: #ffedd5;
+  --yellow-500: #eab308;
+  --yellow-50: #fefce8;
+  --yellow-100: #fef9c3;
+  --green-500: #22c55e;
+  --green-50: #f0fdf4;
+  --green-100: #dcfce7;
+  --teal-500: #14b8a6;
+  --purple-500: #8b5cf6;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-800);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, var(--blue-900) 0%, #1e4a7a 100%);
+  color: white;
+  padding: 0 2rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.logo-icon {
+  font-size: 1.6rem;
+  background: rgba(255,255,255,0.15);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+.logo span { color: var(--blue-300); }
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 0.875rem;
+}
+
+.header-right .badge {
+  background: rgba(255,255,255,0.15);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.header-right .user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-right .avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--blue-500);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+/* Tabs */
+.tab-nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  padding: 0 2rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab-nav::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  padding: 14px 20px;
+  border: none;
+  background: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--gray-500);
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-btn:hover { color: var(--blue-600); }
+
+.tab-btn.active {
+  color: var(--blue-600);
+  font-weight: 600;
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: var(--blue-600);
+  border-radius: 2px 2px 0 0;
+}
+
+.tab-btn i { font-size: 0.9rem; }
+
+/* Main content */
+.main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+.tab-content { display: block; }
+.tab-content.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section-title {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--blue-900);
+  margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+  color: var(--gray-500);
+  font-size: 0.925rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Cards */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ====== TAB 1: Upload ====== */
+.dropzone {
+  border: 2px dashed var(--blue-300);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2rem;
+  text-align: center;
+  background: var(--blue-50);
+  transition: all 0.2s;
+  cursor: pointer;
+  margin-bottom: 2rem;
+}
+
+.dropzone:hover, .dropzone.drag-over {
+  border-color: var(--blue-500);
+  background: var(--blue-100);
+}
+
+.dropzone.drag-over {
+  transform: scale(1.01);
+}
+
+.dropzone-icon {
+  font-size: 2.5rem;
+  color: var(--blue-500);
+  margin-bottom: 1rem;
+}
+
+.dropzone-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--blue-900);
+  margin-bottom: 0.35rem;
+}
+
+.dropzone-sub {
+  color: var(--gray-500);
+  font-size: 0.85rem;
+}
+
+.file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.file-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  transition: box-shadow 0.2s;
+}
+
+.file-card:hover { box-shadow: var(--shadow-md); }
+
+.file-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--blue-50);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: var(--blue-600);
+  flex-shrink: 0;
+}
+
+.file-info { flex: 1; min-width: 0; }
+
+.file-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--gray-800);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--gray-500);
+}
+
+.file-badge {
+  background: var(--blue-100);
+  color: var(--blue-600);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.file-check {
+  color: var(--green-500);
+  font-weight: 600;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.file-pending {
+  color: #ca8a04;
+  font-weight: 600;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  background: var(--yellow-100);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.file-delete {
+  background: none;
+  border: none;
+  color: var(--gray-400);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.file-delete:hover {
+  color: var(--red-500);
+  background: var(--red-50);
+}
+
+.file-card.new-card {
+  animation: slideIn 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--gray-800);
+  color: white;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(20px); }
+}
+
+.dropzone-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.btn-test {
+  background: var(--gray-100);
+  color: var(--gray-700);
+  border: 1.5px solid var(--gray-300);
+}
+
+.btn-test:hover {
+  background: var(--gray-200);
+  border-color: var(--gray-400);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--blue-600);
+  color: white;
+}
+
+.btn-primary:hover { background: #1d4ed8; box-shadow: var(--shadow-md); }
+
+.btn-outline {
+  background: var(--white);
+  color: var(--blue-600);
+  border: 1.5px solid var(--blue-600);
+}
+
+.btn-outline:hover { background: var(--blue-50); }
+
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+}
+
+/* ====== TAB 2: Pipeline ====== */
+.pipeline-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  overflow-x: auto;
+  padding: 1.5rem 0;
+  margin-bottom: 1.5rem;
+}
+
+.agent-card {
+  min-width: 210px;
+  background: var(--white);
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  text-align: center;
+  transition: all 0.4s ease;
+  flex-shrink: 0;
+}
+
+.agent-card.active {
+  border-color: var(--blue-500);
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.15), var(--shadow-md);
+}
+
+.agent-card.done {
+  border-color: var(--green-500);
+  background: var(--green-50);
+}
+
+.agent-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.agent-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--blue-900);
+  margin-bottom: 0.35rem;
+}
+
+.agent-desc {
+  font-size: 0.78rem;
+  color: var(--gray-500);
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+
+.agent-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.status-waiting {
+  background: var(--gray-100);
+  color: var(--gray-500);
+}
+
+.status-running {
+  background: var(--blue-100);
+  color: var(--blue-600);
+}
+
+.status-done {
+  background: var(--green-100);
+  color: #16a34a;
+}
+
+.pipeline-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+  font-size: 1.5rem;
+  color: var(--gray-300);
+  padding-top: 2rem;
+  transition: color 0.4s;
+  flex-shrink: 0;
+}
+
+.pipeline-arrow.active { color: var(--blue-500); }
+.pipeline-arrow.done { color: var(--green-500); }
+
+@keyframes arrowPulse {
+  0%, 100% { transform: translateX(0); opacity: 0.5; }
+  50% { transform: translateX(6px); opacity: 1; }
+}
+
+.pipeline-arrow.animating i {
+  animation: arrowPulse 0.6s ease infinite;
+  color: var(--blue-500);
+}
+
+.log-panel {
+  background: var(--gray-800);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.78rem;
+  line-height: 1.8;
+  color: #a3e635;
+  max-height: 320px;
+  overflow-y: auto;
+  margin-top: 1rem;
+}
+
+.log-line {
+  opacity: 0;
+  animation: logAppear 0.3s ease forwards;
+}
+
+@keyframes logAppear {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.log-time { color: var(--gray-400); }
+.log-agent { color: var(--blue-300); font-weight: 600; }
+.log-msg { color: #d1d5db; }
+.log-success { color: #4ade80; }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--blue-300);
+  border-top-color: var(--blue-600);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ====== TAB 3: Timeline ====== */
+.timeline-wrapper {
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.timeline-axis {
+  display: flex;
+  align-items: flex-end;
+  min-width: 900px;
+  padding: 0 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.timeline-block {
+  position: relative;
+  height: 100px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 4px;
+  color: white;
+}
+
+.timeline-block:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.timeline-block-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.timeline-block-years {
+  font-size: 0.75rem;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+
+.timeline-block-role {
+  font-size: 0.72rem;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+
+.timeline-years {
+  display: flex;
+  min-width: 900px;
+  padding: 0 0.5rem;
+}
+
+.timeline-year {
+  font-size: 0.7rem;
+  color: var(--gray-400);
+  font-weight: 500;
+}
+
+.timeline-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--gray-800);
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  white-space: nowrap;
+  z-index: 10;
+  box-shadow: var(--shadow-lg);
+}
+
+.timeline-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--gray-800);
+}
+
+.timeline-block:hover .timeline-tooltip { display: block; }
+
+.timeline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--gray-600);
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+/* ====== TAB 4: Anomalies ====== */
+.anomaly-summary {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.anomaly-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.anomaly-summary-item.critical { background: var(--red-50); color: #dc2626; border: 1px solid var(--red-100); }
+.anomaly-summary-item.important { background: var(--orange-50); color: #ea580c; border: 1px solid var(--orange-100); }
+.anomaly-summary-item.minor { background: var(--yellow-50); color: #ca8a04; border: 1px solid var(--yellow-100); }
+
+.anomaly-list { display: flex; flex-direction: column; gap: 1rem; }
+
+.anomaly-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  transition: box-shadow 0.2s;
+}
+
+.anomaly-card:hover { box-shadow: var(--shadow-md); }
+
+.severity-indicator {
+  width: 4px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+.severity-critical { background: var(--red-500); }
+.severity-important { background: var(--orange-500); }
+.severity-minor { background: var(--yellow-500); }
+
+.anomaly-content { flex: 1; }
+
+.anomaly-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.5rem;
+}
+
+.badge-critical { background: var(--red-100); color: #dc2626; }
+.badge-important { background: var(--orange-100); color: #ea580c; }
+.badge-minor { background: var(--yellow-100); color: #ca8a04; }
+
+.anomaly-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--gray-800);
+  margin-bottom: 0.25rem;
+}
+
+.anomaly-desc {
+  font-size: 0.85rem;
+  color: var(--gray-500);
+  margin-bottom: 0.75rem;
+}
+
+.anomaly-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ====== TAB 5: Estimation ====== */
+.estimation-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .estimation-grid { grid-template-columns: 1fr; }
+}
+
+.regime-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.regime-table th {
+  background: var(--blue-50);
+  color: var(--blue-900);
+  font-weight: 600;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 2px solid var(--blue-200);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.regime-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--gray-100);
+  color: var(--gray-700);
+}
+
+.regime-table tr:last-child td {
+  font-weight: 700;
+  color: var(--blue-900);
+  border-top: 2px solid var(--blue-200);
+  background: var(--blue-50);
+}
+
+.regime-table .amount {
+  font-weight: 700;
+  color: var(--blue-600);
+  font-size: 1rem;
+}
+
+.chart-container {
+  position: relative;
+  height: 280px;
+}
+
+.info-callout {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--blue-50);
+  border: 1px solid var(--blue-100);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--blue-500);
+  margin-bottom: 1rem;
+}
+
+.info-callout i { color: var(--blue-500); margin-top: 2px; }
+
+.info-callout-text {
+  font-size: 0.875rem;
+  color: var(--gray-700);
+  line-height: 1.6;
+}
+
+.info-callout-text strong { color: var(--blue-900); }
+
+.stat-comparison {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--green-50);
+  border: 1px solid var(--green-100);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--green-500);
+}
+
+.stat-comparison i { color: var(--green-500); font-size: 1.2rem; }
+
+.stat-comparison-text {
+  font-size: 0.875rem;
+  color: var(--gray-700);
+}
+
+.stat-comparison-text strong { color: var(--gray-800); }
+
+/* ====== TAB 6: Export ====== */
+.export-section { margin-bottom: 2rem; }
+
+.export-section-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--blue-900);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slides-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.slide-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.slide-card:hover { box-shadow: var(--shadow-md); }
+
+.slide-preview {
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  font-size: 0.8rem;
+  color: var(--gray-600);
+}
+
+.slide-preview-title {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--blue-900);
+  text-align: center;
+}
+
+.slide-preview.cover {
+  background: linear-gradient(135deg, var(--blue-900), #1e4a7a);
+  color: white;
+}
+
+.slide-preview.cover .slide-preview-title { color: white; }
+.slide-preview.cover .slide-preview-sub { color: var(--blue-300); font-size: 0.75rem; }
+
+.slide-label {
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  color: var(--gray-500);
+  border-top: 1px solid var(--gray-100);
+  font-weight: 500;
+}
+
+.word-preview {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 2rem 2.5rem;
+  max-width: 600px;
+  font-size: 0.85rem;
+  line-height: 1.8;
+  color: var(--gray-600);
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.word-preview h3 {
+  font-family: 'Source Serif 4', Georgia, serif;
+  color: var(--blue-900);
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.word-preview h4 {
+  color: var(--gray-700);
+  font-size: 0.9rem;
+  margin: 1rem 0 0.35rem;
+}
+
+.word-preview p { margin-bottom: 0.5rem; }
+
+.word-preview .line-placeholder {
+  height: 8px;
+  background: var(--gray-100);
+  border-radius: 4px;
+  margin: 6px 0;
+}
+
+.word-preview .line-placeholder.short { width: 65%; }
+
+.export-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.export-btn-pptx {
+  background: #d35230;
+  color: white;
+}
+
+.export-btn-pptx:hover { background: #b7432a; }
+
+.export-btn-word {
+  background: #2b579a;
+  color: white;
+}
+
+.export-btn-word:hover { background: #1e3f6f; }
+
+.export-btn .progress-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.5);
+  width: 0;
+  transition: width 1.5s ease;
+}
+
+.export-btn.exporting .progress-bar { width: 100%; }
+
+.export-btn.exported {
+  pointer-events: none;
+}
+
+.export-btn.exported i::before { content: "\f00c"; }
+
+/* Timeline mini for slide */
+.mini-timeline {
+  display: flex;
+  gap: 2px;
+  height: 16px;
+  width: 80%;
+}
+
+.mini-timeline div { border-radius: 2px; height: 100%; }
+
+/* Mini chart for slide */
+.mini-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 50px;
+}
+
+.mini-bar {
+  width: 24px;
+  border-radius: 3px 3px 0 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main { padding: 1rem; }
+  .pipeline-container { flex-direction: column; align-items: stretch; }
+  .pipeline-arrow { transform: rotate(90deg); min-width: auto; padding: 0.5rem 0; }
+  .file-grid { grid-template-columns: 1fr; }
+}
+
+/* ====== PASS 1: Visual Polish ====== */
+
+/* Pulse animation on idle pipeline agents */
+@keyframes idlePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.12); }
+  50% { box-shadow: 0 0 0 10px rgba(37,99,235,0); }
+}
+.agent-card.idle-pulse {
+  animation: idlePulse 2.5s ease-in-out infinite;
+}
+
+/* Smooth tab transitions */
+.tab-content {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+}
+.tab-content.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  position: relative;
+}
+.main { position: relative; }
+
+/* Timeline enhanced hover popup card */
+.timeline-tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--white);
+  color: var(--gray-800);
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  white-space: nowrap;
+  z-index: 20;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+  border: 1px solid var(--gray-200);
+  min-width: 240px;
+}
+.timeline-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: var(--white);
+}
+.timeline-tooltip .tt-header {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--blue-900);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.timeline-tooltip .tt-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 3px 0;
+  font-size: 0.8rem;
+}
+.timeline-tooltip .tt-label { color: var(--gray-500); }
+.timeline-tooltip .tt-value { font-weight: 600; color: var(--gray-800); }
+.timeline-block:hover .timeline-tooltip { display: block; }
+.timeline-block {
+  transition: all 0.3s ease;
+}
+.timeline-block:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+  z-index: 5;
+}
+
+/* Anomaly card severity left border */
+.anomaly-card {
+  border-left: 4px solid transparent;
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+}
+.anomaly-card:hover {
+  transform: translateX(4px);
+}
+.anomaly-card.severity-border-critical { border-left-color: var(--red-500); }
+.anomaly-card.severity-border-important { border-left-color: var(--orange-500); }
+.anomaly-card.severity-border-minor { border-left-color: var(--yellow-500); }
+
+/* ====== PASS 2: Data & Realism ====== */
+
+/* Progress indicator in header */
+.header-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.progress-ring {
+  width: 32px;
+  height: 32px;
+  position: relative;
+}
+.progress-ring svg { transform: rotate(-90deg); }
+.progress-ring-circle {
+  fill: none;
+  stroke: rgba(255,255,255,0.2);
+  stroke-width: 3;
+}
+.progress-ring-value {
+  fill: none;
+  stroke: #4ade80;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 75.4;
+  stroke-dashoffset: 11.3;
+  transition: stroke-dashoffset 0.6s ease;
+}
+.progress-pct { color: #4ade80; font-weight: 700; }
+
+/* Impact financier total */
+.financial-impact-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #fef2f2, #fff7ed);
+  border: 1px solid var(--red-100);
+  border-radius: var(--radius);
+  margin-bottom: 1.5rem;
+}
+.financial-impact-banner .impact-amount {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #dc2626;
+  font-family: 'Inter', sans-serif;
+}
+.financial-impact-banner .impact-label {
+  font-size: 0.85rem;
+  color: var(--gray-600);
+  line-height: 1.5;
+}
+
+/* Monthly breakdown table */
+.monthly-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin-top: 1rem;
+}
+.monthly-table th {
+  background: var(--blue-50);
+  color: var(--blue-900);
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 2px solid var(--blue-200);
+}
+.monthly-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--gray-100);
+  color: var(--gray-700);
+}
+.monthly-table tr:last-child td {
+  font-weight: 700;
+  color: var(--blue-900);
+  background: var(--blue-50);
+  border-top: 2px solid var(--blue-200);
+}
+.monthly-table .highlight-val {
+  font-weight: 700;
+  color: var(--blue-600);
+}
+
+/* Confidence score badge */
+.confidence-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1px solid var(--green-100);
+  border-radius: 24px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #166534;
+  margin-bottom: 1rem;
+}
+.confidence-badge i { font-size: 1rem; }
+
+/* ====== PASS 3: Impressiveness ====== */
+
+/* Welcome banner */
+.welcome-banner {
+  background: linear-gradient(135deg, var(--blue-900) 0%, #1e4a7a 50%, #2563eb 100%);
+  color: white;
+  padding: 1.5rem 2rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 24px rgba(30,58,95,0.25);
+  position: relative;
+  overflow: hidden;
+}
+.welcome-banner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.welcome-banner .wb-left { z-index: 1; }
+.welcome-banner .wb-name {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.welcome-banner .wb-info {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.welcome-banner .wb-right {
+  z-index: 1;
+  text-align: right;
+}
+.welcome-banner .wb-status {
+  background: rgba(255,255,255,0.15);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.welcome-banner .wb-status .dot-green {
+  width: 8px;
+  height: 8px;
+  background: #4ade80;
+  border-radius: 50%;
+  animation: dotBlink 1.5s ease-in-out infinite;
+}
+@keyframes dotBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Glowing pipeline connections / particle effects */
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.3; filter: blur(2px); }
+  50% { opacity: 1; filter: blur(0px); }
+}
+.pipeline-arrow.active .glow-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--blue-500);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--blue-500), 0 0 16px rgba(37,99,235,0.4);
+  animation: glowPulse 0.8s ease infinite;
+  margin: 0 2px;
+}
+.pipeline-container {
+  position: relative;
+}
+.agent-card.active {
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.15), 0 0 20px rgba(37,99,235,0.1), var(--shadow-md);
+}
+.agent-card.done {
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.12), var(--shadow-sm);
+}
+
+/* Particle container */
+.particle-field {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--blue-500);
+  border-radius: 50%;
+  opacity: 0;
+  box-shadow: 0 0 6px var(--blue-400);
+}
+@keyframes particleFloat {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.5); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
+}
+
+/* Recommendations section */
+.reco-card {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--green-50);
+  border: 1px solid var(--green-100);
+  border-left: 4px solid var(--green-500);
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.75rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.reco-card:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
+}
+.reco-card .reco-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--green-100);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #16a34a;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+.reco-card .reco-text {
+  font-size: 0.85rem;
+  color: var(--gray-700);
+  line-height: 1.6;
+}
+.reco-card .reco-text strong { color: #166534; }
+.reco-card .reco-gain {
+  font-size: 0.78rem;
+  color: #16a34a;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* Slide zoom modal */
+.slide-zoom-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.slide-zoom-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.slide-zoom-content {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  max-width: 700px;
+  width: 90%;
+  box-shadow: var(--shadow-xl);
+  transform: scale(0.9);
+  transition: transform 0.3s;
+}
+.slide-zoom-overlay.visible .slide-zoom-content {
+  transform: scale(1);
+}
+.slide-zoom-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--white);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-600);
+}
+.slide-card { cursor: pointer; }
+
+/* Print styles */
+@media print {
+  .header, .tab-nav, .welcome-banner .wb-right, .btn, .export-buttons,
+  .dropzone, .dropzone-actions, .anomaly-actions, .slide-zoom-overlay { display: none !important; }
+  .tab-content { display: block !important; opacity: 1 !important; position: relative !important; pointer-events: auto !important; transform: none !important; }
+  .main { max-width: 100%; padding: 0; }
+  .card { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+  .anomaly-card { break-inside: avoid; }
+  .estimation-grid { grid-template-columns: 1fr; }
+  body { background: white; }
+  .welcome-banner { color: black; background: #f0f7ff !important; box-shadow: none; }
+  .welcome-banner .wb-name { color: var(--blue-900); }
+  .welcome-banner .wb-info { color: var(--gray-600); }
+  .financial-impact-banner { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">🏛️</div>
+    Retraite<span>IA</span>
+  </div>
+  <div class="header-right">
+    <div class="header-progress">
+      <div class="progress-ring">
+        <svg width="32" height="32" viewBox="0 0 32 32">
+          <circle class="progress-ring-circle" cx="16" cy="16" r="12"/>
+          <circle class="progress-ring-value" cx="16" cy="16" r="12"/>
+        </svg>
+      </div>
+      <span>Analyse : <span class="progress-pct" id="progress-pct-text">85%</span> terminée</span>
+    </div>
+    <span class="badge"><i class="fa-solid fa-bolt"></i> Multi-agents</span>
+    <div class="user">
+      <div class="avatar">MD</div>
+      <span>Martin Dupont</span>
+    </div>
+  </div>
+</header>
+
+<!-- Tab Navigation -->
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="upload"><i class="fa-solid fa-cloud-arrow-up"></i> Documents</button>
+  <button class="tab-btn" data-tab="pipeline"><i class="fa-solid fa-robot"></i> Pipeline IA</button>
+  <button class="tab-btn" data-tab="timeline"><i class="fa-solid fa-timeline"></i> Carrière</button>
+  <button class="tab-btn" data-tab="anomalies"><i class="fa-solid fa-triangle-exclamation"></i> Anomalies</button>
+  <button class="tab-btn" data-tab="estimation"><i class="fa-solid fa-calculator"></i> Estimation</button>
+  <button class="tab-btn" data-tab="export"><i class="fa-solid fa-file-export"></i> Export</button>
+</nav>
+
+<!-- Main Content -->
+<div class="main">
+
+  <!-- Welcome Banner -->
+  <div class="welcome-banner">
+    <div class="wb-left">
+      <div class="wb-name">Dossier de Martin Dupont</div>
+      <div class="wb-info">
+        <span><i class="fa-solid fa-cake-candles" style="margin-right:4px;"></i> Né le 15/03/1963</span>
+        <span><i class="fa-solid fa-hashtag" style="margin-right:4px;"></i> N° SS : 1 63 03 75 108 042 68</span>
+        <span><i class="fa-solid fa-calendar-check" style="margin-right:4px;"></i> Taux plein : 64 ans 6 mois</span>
+      </div>
+    </div>
+    <div class="wb-right">
+      <div class="wb-status"><div class="dot-green"></div> Analyse en cours</div>
+    </div>
+  </div>
+
+  <!-- TAB 1: Upload Documents -->
+  <div class="tab-content active" id="tab-upload">
+    <h2 class="section-title">Documents justificatifs</h2>
+    <p class="section-subtitle">Importez vos documents pour alimenter l'analyse IA de votre bilan retraite.</p>
+
+    <input type="file" id="fileInput" multiple accept=".pdf,.docx,.xlsx,.jpg,.png,.txt" style="display: none;">
+
+    <div class="dropzone" id="dropzone">
+      <div class="dropzone-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+      <div class="dropzone-title">Glissez vos documents ici</div>
+      <div class="dropzone-sub">ou cliquez pour sélectionner — PDF, DOCX, XLSX, JPG, PNG, TXT (max. 10 Mo)</div>
+    </div>
+
+    <div class="dropzone-actions">
+      <button class="btn btn-test" onclick="loadTestDocuments()">
+        <i class="fa-solid fa-flask"></i> Jeu de test
+      </button>
+    </div>
+
+    <h3 id="doc-counter" style="font-size: 0.9rem; font-weight: 600; color: var(--gray-700); margin-bottom: 1rem;">
+      <i class="fa-solid fa-folder-open" style="color: var(--blue-500); margin-right: 6px;"></i>
+      3 documents chargés
+    </h3>
+
+    <div class="file-grid" id="file-grid">
+      <div class="file-card" data-doc-id="preloaded-1">
+        <div class="file-icon"><i class="fa-solid fa-file-pdf"></i></div>
+        <div class="file-info">
+          <div class="file-name">Relevé_RIS_2024.pdf</div>
+          <div class="file-meta">
+            <span>245 Ko</span>
+            <span class="file-badge">Relevé Individuel de Situation</span>
+          </div>
+        </div>
+        <div class="file-check"><i class="fa-solid fa-circle-check"></i> Analysé</div>
+        <button class="file-delete" title="Supprimer" onclick="removeDocument('preloaded-1')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="file-card" data-doc-id="preloaded-2">
+        <div class="file-icon"><i class="fa-solid fa-file-pdf"></i></div>
+        <div class="file-info">
+          <div class="file-name">Bulletin_Paie_Dec2024.pdf</div>
+          <div class="file-meta">
+            <span>128 Ko</span>
+            <span class="file-badge">Bulletin de salaire</span>
+          </div>
+        </div>
+        <div class="file-check"><i class="fa-solid fa-circle-check"></i> Analysé</div>
+        <button class="file-delete" title="Supprimer" onclick="removeDocument('preloaded-2')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="file-card" data-doc-id="preloaded-3">
+        <div class="file-icon"><i class="fa-solid fa-file-pdf"></i></div>
+        <div class="file-info">
+          <div class="file-name">Releve_CNAV_2024.pdf</div>
+          <div class="file-meta">
+            <span>312 Ko</span>
+            <span class="file-badge">Relevé de carrière CNAV</span>
+          </div>
+        </div>
+        <div class="file-check"><i class="fa-solid fa-circle-check"></i> Analysé</div>
+        <button class="file-delete" title="Supprimer" onclick="removeDocument('preloaded-3')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: Pipeline Multi-Agents -->
+  <div class="tab-content" id="tab-pipeline">
+    <h2 class="section-title">Pipeline multi-agents</h2>
+    <p class="section-subtitle">Quatre agents IA spécialisés analysent vos documents de manière séquentielle.</p>
+
+    <div class="pipeline-container" id="pipeline-container">
+      <div class="particle-field" id="particle-field"></div>
+      <div class="agent-card idle-pulse" id="agent-1">
+        <div class="agent-icon">🔍</div>
+        <div class="agent-name">Lecteur RIS</div>
+        <div class="agent-desc">Extraction des données du relevé individuel de situation</div>
+        <div class="agent-status status-waiting" id="status-1"><i class="fa-solid fa-clock"></i> En attente</div>
+      </div>
+      <div class="pipeline-arrow" id="arrow-1"><i class="fa-solid fa-chevron-right"></i></div>
+      <div class="agent-card idle-pulse" id="agent-2">
+        <div class="agent-icon">📊</div>
+        <div class="agent-name">Analyseur Bulletins</div>
+        <div class="agent-desc">Vérification des salaires et cotisations déclarés</div>
+        <div class="agent-status status-waiting" id="status-2"><i class="fa-solid fa-clock"></i> En attente</div>
+      </div>
+      <div class="pipeline-arrow" id="arrow-2"><i class="fa-solid fa-chevron-right"></i></div>
+      <div class="agent-card idle-pulse" id="agent-3">
+        <div class="agent-icon">⚖️</div>
+        <div class="agent-name">Expert Régimes</div>
+        <div class="agent-desc">Identification des régimes de retraite applicables</div>
+        <div class="agent-status status-waiting" id="status-3"><i class="fa-solid fa-clock"></i> En attente</div>
+      </div>
+      <div class="pipeline-arrow" id="arrow-3"><i class="fa-solid fa-chevron-right"></i></div>
+      <div class="agent-card idle-pulse" id="agent-4">
+        <div class="agent-icon">🧮</div>
+        <div class="agent-name">Calculateur</div>
+        <div class="agent-desc">Estimation des droits à la retraite et projections</div>
+        <div class="agent-status status-waiting" id="status-4"><i class="fa-solid fa-clock"></i> En attente</div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <button class="btn btn-primary" id="btn-launch" onclick="launchPipeline()">
+        <i class="fa-solid fa-play"></i> Lancer l'analyse
+      </button>
+    </div>
+
+    <div class="log-panel" id="log-panel">
+      <div style="color: var(--gray-400); font-style: italic;">En attente du lancement de l'analyse...</div>
+    </div>
+  </div>
+
+  <!-- TAB 3: Timeline Carrière -->
+  <div class="tab-content" id="tab-timeline">
+    <h2 class="section-title">Parcours de carrière</h2>
+    <p class="section-subtitle">Visualisation chronologique de l'ensemble de votre activité professionnelle (1985 — 2024).</p>
+
+    <div class="card" style="padding: 2rem;">
+      <div class="timeline-wrapper">
+        <div class="timeline-axis">
+          <div class="timeline-block" style="flex: 7; background: linear-gradient(135deg, #2563eb, #3b82f6);">
+            <div class="timeline-tooltip">
+              <div class="tt-header"><i class="fa-solid fa-building" style="color:#3b82f6;"></i> Société Générale</div>
+              <div class="tt-row"><span class="tt-label">Poste</span><span class="tt-value">Cadre bancaire</span></div>
+              <div class="tt-row"><span class="tt-label">Période</span><span class="tt-value">1985 — 1992 (7 ans)</span></div>
+              <div class="tt-row"><span class="tt-label">Salaire moyen</span><span class="tt-value">28 500 €/an</span></div>
+              <div class="tt-row"><span class="tt-label">Régime</span><span class="tt-value">CNAV + AGIRC-ARRCO</span></div>
+              <div class="tt-row"><span class="tt-label">Trimestres</span><span class="tt-value" style="color:#2563eb;">28 validés</span></div>
+            </div>
+            <div class="timeline-block-title">Société Générale</div>
+            <div class="timeline-block-years">1985 — 1992</div>
+            <div class="timeline-block-role">Cadre bancaire</div>
+          </div>
+          <div class="timeline-block" style="flex: 6; background: linear-gradient(135deg, #1e3a5f, #1e4a7a);">
+            <div class="timeline-tooltip">
+              <div class="tt-header"><i class="fa-solid fa-building-columns" style="color:#1e4a7a;"></i> BNP Paribas</div>
+              <div class="tt-row"><span class="tt-label">Poste</span><span class="tt-value">Responsable crédit</span></div>
+              <div class="tt-row"><span class="tt-label">Période</span><span class="tt-value">1992 — 1998 (6 ans)</span></div>
+              <div class="tt-row"><span class="tt-label">Salaire moyen</span><span class="tt-value">42 300 €/an</span></div>
+              <div class="tt-row"><span class="tt-label">Régime</span><span class="tt-value">CNAV + AGIRC-ARRCO</span></div>
+              <div class="tt-row"><span class="tt-label">Trimestres</span><span class="tt-value" style="color:#2563eb;">24 validés</span></div>
+            </div>
+            <div class="timeline-block-title">BNP Paribas</div>
+            <div class="timeline-block-years">1992 — 1998</div>
+            <div class="timeline-block-role">Responsable crédit</div>
+          </div>
+          <div class="timeline-block" style="flex: 7; background: linear-gradient(135deg, #16a34a, #22c55e);">
+            <div class="timeline-tooltip">
+              <div class="tt-header"><i class="fa-solid fa-user-tie" style="color:#16a34a;"></i> Indépendant</div>
+              <div class="tt-row"><span class="tt-label">Poste</span><span class="tt-value">Consultant financier</span></div>
+              <div class="tt-row"><span class="tt-label">Période</span><span class="tt-value">1998 — 2005 (7 ans)</span></div>
+              <div class="tt-row"><span class="tt-label">Salaire moyen</span><span class="tt-value">54 100 €/an</span></div>
+              <div class="tt-row"><span class="tt-label">Régime</span><span class="tt-value">RSI (SSI)</span></div>
+              <div class="tt-row"><span class="tt-label">Trimestres</span><span class="tt-value" style="color:#2563eb;">28 validés</span></div>
+            </div>
+            <div class="timeline-block-title">Indépendant</div>
+            <div class="timeline-block-years">1998 — 2005</div>
+            <div class="timeline-block-role">Consultant financier</div>
+          </div>
+          <div class="timeline-block" style="flex: 7; background: linear-gradient(135deg, #ea580c, #f97316);">
+            <div class="timeline-tooltip">
+              <div class="tt-header"><i class="fa-solid fa-shield-halved" style="color:#ea580c;"></i> AXA Assurances</div>
+              <div class="tt-row"><span class="tt-label">Poste</span><span class="tt-value">Directeur régional</span></div>
+              <div class="tt-row"><span class="tt-label">Période</span><span class="tt-value">2005 — 2012 (7 ans)</span></div>
+              <div class="tt-row"><span class="tt-label">Salaire moyen</span><span class="tt-value">72 000 €/an</span></div>
+              <div class="tt-row"><span class="tt-label">Régime</span><span class="tt-value">CNAV + AGIRC-ARRCO</span></div>
+              <div class="tt-row"><span class="tt-label">Trimestres</span><span class="tt-value" style="color:#2563eb;">28 validés</span></div>
+            </div>
+            <div class="timeline-block-title">AXA Assurances</div>
+            <div class="timeline-block-years">2005 — 2012</div>
+            <div class="timeline-block-role">Directeur régional</div>
+          </div>
+          <div class="timeline-block" style="flex: 6; background: linear-gradient(135deg, #0d9488, #14b8a6);">
+            <div class="timeline-tooltip">
+              <div class="tt-header"><i class="fa-solid fa-seedling" style="color:#0d9488;"></i> Crédit Agricole</div>
+              <div class="tt-row"><span class="tt-label">Poste</span><span class="tt-value">Directeur d'agence</span></div>
+              <div class="tt-row"><span class="tt-label">Période</span><span class="tt-value">2012 — 2018 (6 ans)</span></div>
+              <div class="tt-row"><span class="tt-label">Salaire moyen</span><span class="tt-value">68 500 €/an</span></div>
+              <div class="tt-row"><span class="tt-label">Régime</span><span class="tt-value">CNAV + AGIRC-ARRCO</span></div>
+              <div class="tt-row"><span class="tt-label">Trimestres</span><span class="tt-value" style="color:#2563eb;">24 validés</span></div>
+            </div>
+            <div class="timeline-block-title">Crédit Agricole</div>
+            <div class="timeline-block-years">2012 — 2018</div>
+            <div class="timeline-block-role">Directeur d'agence</div>
+          </div>
+          <div class="timeline-block" style="flex: 6; background: linear-gradient(135deg, #7c3aed, #8b5cf6);">
+            <div class="timeline-tooltip">
+              <div class="tt-header"><i class="fa-solid fa-hand-holding-heart" style="color:#7c3aed;"></i> MAIF</div>
+              <div class="tt-row"><span class="tt-label">Poste</span><span class="tt-value">Directeur commercial</span></div>
+              <div class="tt-row"><span class="tt-label">Période</span><span class="tt-value">2018 — 2024 (6 ans)</span></div>
+              <div class="tt-row"><span class="tt-label">Salaire moyen</span><span class="tt-value">85 200 €/an</span></div>
+              <div class="tt-row"><span class="tt-label">Régime</span><span class="tt-value">CNAV + AGIRC-ARRCO</span></div>
+              <div class="tt-row"><span class="tt-label">Trimestres</span><span class="tt-value" style="color:#2563eb;">24 validés</span></div>
+            </div>
+            <div class="timeline-block-title">MAIF</div>
+            <div class="timeline-block-years">2018 — 2024</div>
+            <div class="timeline-block-role">Directeur commercial</div>
+          </div>
+        </div>
+        <div class="timeline-years">
+          <span class="timeline-year" style="flex: 7;">1985</span>
+          <span class="timeline-year" style="flex: 6;">1992</span>
+          <span class="timeline-year" style="flex: 7;">1998</span>
+          <span class="timeline-year" style="flex: 7;">2005</span>
+          <span class="timeline-year" style="flex: 6;">2012</span>
+          <span class="timeline-year" style="flex: 6;">2018</span>
+          <span class="timeline-year" style="text-align: right;">2024</span>
+        </div>
+      </div>
+
+      <div class="timeline-legend">
+        <div class="legend-item"><div class="legend-dot" style="background: #3b82f6;"></div> Société Générale</div>
+        <div class="legend-item"><div class="legend-dot" style="background: #1e3a5f;"></div> BNP Paribas</div>
+        <div class="legend-item"><div class="legend-dot" style="background: #22c55e;"></div> Indépendant</div>
+        <div class="legend-item"><div class="legend-dot" style="background: #f97316;"></div> AXA Assurances</div>
+        <div class="legend-item"><div class="legend-dot" style="background: #14b8a6;"></div> Crédit Agricole</div>
+        <div class="legend-item"><div class="legend-dot" style="background: #8b5cf6;"></div> MAIF</div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
+      <div class="card" style="flex: 1; min-width: 200px; text-align: center;">
+        <div style="font-size: 2rem; font-weight: 800; color: var(--blue-600);">39 ans</div>
+        <div style="font-size: 0.85rem; color: var(--gray-500); margin-top: 4px;">Durée totale de carrière</div>
+      </div>
+      <div class="card" style="flex: 1; min-width: 200px; text-align: center;">
+        <div style="font-size: 2rem; font-weight: 800; color: var(--blue-600);">156</div>
+        <div style="font-size: 0.85rem; color: var(--gray-500); margin-top: 4px;">Trimestres validés</div>
+      </div>
+      <div class="card" style="flex: 1; min-width: 200px; text-align: center;">
+        <div style="font-size: 2rem; font-weight: 800; color: var(--blue-600);">6</div>
+        <div style="font-size: 0.85rem; color: var(--gray-500); margin-top: 4px;">Employeurs identifiés</div>
+      </div>
+      <div class="card" style="flex: 1; min-width: 200px; text-align: center;">
+        <div style="font-size: 2rem; font-weight: 800; color: var(--blue-600);">3</div>
+        <div style="font-size: 0.85rem; color: var(--gray-500); margin-top: 4px;">Régimes de retraite</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: Anomalies -->
+  <div class="tab-content" id="tab-anomalies">
+    <h2 class="section-title">Anomalies détectées</h2>
+    <p class="section-subtitle">L'analyse croisée de vos documents a révélé 5 anomalies nécessitant votre attention.</p>
+
+    <div class="anomaly-summary">
+      <div class="anomaly-summary-item critical"><i class="fa-solid fa-circle-xmark"></i> 1 critique</div>
+      <div class="anomaly-summary-item important"><i class="fa-solid fa-circle-exclamation"></i> 2 importants</div>
+      <div class="anomaly-summary-item minor"><i class="fa-solid fa-circle-info"></i> 2 mineurs</div>
+    </div>
+
+    <!-- Impact financier total -->
+    <div class="financial-impact-banner">
+      <div>
+        <i class="fa-solid fa-money-bill-trend-up" style="font-size: 2rem; color: #dc2626;"></i>
+      </div>
+      <div>
+        <div class="impact-amount">-182 €/mois</div>
+        <div class="impact-label">Impact financier total estimé si les anomalies ne sont pas corrigées.<br>
+          <strong>Soit -2 184 €/an</strong> de manque à gagner sur votre pension.</div>
+      </div>
+    </div>
+
+    <div class="anomaly-list">
+      <div class="anomaly-card severity-border-critical">
+        <div class="severity-indicator severity-critical"></div>
+        <div class="anomaly-content">
+          <div class="anomaly-badge badge-critical"><i class="fa-solid fa-circle-xmark"></i> Critique</div>
+          <div class="anomaly-title">4 trimestres manquants (1998-1999)</div>
+          <div class="anomaly-desc">Période de transition entre BNP Paribas et activité indépendante. Ces trimestres ne sont pas déclarés à la CNAV, ce qui réduit votre durée d'assurance et impacte directement le calcul du taux plein.</div>
+          <div style="font-size: 0.8rem; color: #dc2626; font-weight: 600; margin-bottom: 0.75rem;">
+            <i class="fa-solid fa-chart-line"></i> Impact estimé : -89 €/mois sur la pension
+          </div>
+          <div class="anomaly-actions">
+            <button class="btn btn-primary btn-sm" onclick="handleAnomaly(this,'corriger')"><i class="fa-solid fa-wrench"></i> Corriger</button>
+            <button class="btn btn-outline btn-sm" onclick="handleAnomaly(this,'signaler')"><i class="fa-solid fa-flag"></i> Signaler</button>
+            <button class="btn btn-outline btn-sm" style="color: var(--gray-500); border-color: var(--gray-300);" onclick="handleAnomaly(this,'ignorer')"><i class="fa-solid fa-eye-slash"></i> Ignorer</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="anomaly-card severity-border-important">
+        <div class="severity-indicator severity-important"></div>
+        <div class="anomaly-content">
+          <div class="anomaly-badge badge-important"><i class="fa-solid fa-circle-exclamation"></i> Important</div>
+          <div class="anomaly-title">Écart de salaire 2003</div>
+          <div class="anomaly-desc">Le salaire déclaré auprès du RSI (32 400 €) ne correspond pas au chiffre d'affaires déclaré sur les bulletins (38 200 €), soit un écart de -15,2%. Cela impacte le calcul des droits sur le régime indépendant.</div>
+          <div style="font-size: 0.8rem; color: #ea580c; font-weight: 600; margin-bottom: 0.75rem;">
+            <i class="fa-solid fa-chart-line"></i> Impact estimé : -34 €/mois sur la pension
+          </div>
+          <div class="anomaly-actions">
+            <button class="btn btn-primary btn-sm" onclick="handleAnomaly(this,'corriger')"><i class="fa-solid fa-wrench"></i> Corriger</button>
+            <button class="btn btn-outline btn-sm" onclick="handleAnomaly(this,'signaler')"><i class="fa-solid fa-flag"></i> Signaler</button>
+            <button class="btn btn-outline btn-sm" style="color: var(--gray-500); border-color: var(--gray-300);" onclick="handleAnomaly(this,'ignorer')"><i class="fa-solid fa-eye-slash"></i> Ignorer</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="anomaly-card severity-border-important">
+        <div class="severity-indicator severity-important"></div>
+        <div class="anomaly-content">
+          <div class="anomaly-badge badge-important"><i class="fa-solid fa-circle-exclamation"></i> Important</div>
+          <div class="anomaly-title">Régime indépendant incomplet</div>
+          <div class="anomaly-desc">Les cotisations RSI pour la période 2000-2002 sont partiellement enregistrées. Seuls 8 trimestres sur 12 sont validés, probablement en raison de cotisations minimales insuffisantes.</div>
+          <div style="font-size: 0.8rem; color: #ea580c; font-weight: 600; margin-bottom: 0.75rem;">
+            <i class="fa-solid fa-chart-line"></i> Impact estimé : -47 €/mois sur la pension
+          </div>
+          <div class="anomaly-actions">
+            <button class="btn btn-primary btn-sm" onclick="handleAnomaly(this,'corriger')"><i class="fa-solid fa-wrench"></i> Corriger</button>
+            <button class="btn btn-outline btn-sm" onclick="handleAnomaly(this,'signaler')"><i class="fa-solid fa-flag"></i> Signaler</button>
+            <button class="btn btn-outline btn-sm" style="color: var(--gray-500); border-color: var(--gray-300);" onclick="handleAnomaly(this,'ignorer')"><i class="fa-solid fa-eye-slash"></i> Ignorer</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="anomaly-card severity-border-minor">
+        <div class="severity-indicator severity-minor"></div>
+        <div class="anomaly-content">
+          <div class="anomaly-badge badge-minor"><i class="fa-solid fa-circle-info"></i> Mineur</div>
+          <div class="anomaly-title">Doublon trimestre T3 2012</div>
+          <div class="anomaly-desc">Le troisième trimestre 2012 est comptabilisé à la fois par le Crédit Agricole et par la MAIF. Ce doublon sera automatiquement corrigé par la CNAV mais mérite vérification.</div>
+          <div style="font-size: 0.8rem; color: #ca8a04; font-weight: 600; margin-bottom: 0.75rem;">
+            <i class="fa-solid fa-chart-line"></i> Impact estimé : aucun
+          </div>
+          <div class="anomaly-actions">
+            <button class="btn btn-primary btn-sm" onclick="handleAnomaly(this,'corriger')"><i class="fa-solid fa-wrench"></i> Corriger</button>
+            <button class="btn btn-outline btn-sm" onclick="handleAnomaly(this,'signaler')"><i class="fa-solid fa-flag"></i> Signaler</button>
+            <button class="btn btn-outline btn-sm" style="color: var(--gray-500); border-color: var(--gray-300);" onclick="handleAnomaly(this,'ignorer')"><i class="fa-solid fa-eye-slash"></i> Ignorer</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="anomaly-card severity-border-minor">
+        <div class="severity-indicator severity-minor"></div>
+        <div class="anomaly-content">
+          <div class="anomaly-badge badge-minor"><i class="fa-solid fa-circle-info"></i> Mineur</div>
+          <div class="anomaly-title">Points AGIRC-ARRCO non reportés 2015</div>
+          <div class="anomaly-desc">847 points AGIRC-ARRCO acquis en 2015 ne figurent pas sur le relevé. Cela peut être dû à un retard de report par la caisse complémentaire du Crédit Agricole.</div>
+          <div style="font-size: 0.8rem; color: #ca8a04; font-weight: 600; margin-bottom: 0.75rem;">
+            <i class="fa-solid fa-chart-line"></i> Impact estimé : -12 €/mois sur la pension complémentaire
+          </div>
+          <div class="anomaly-actions">
+            <button class="btn btn-primary btn-sm" onclick="handleAnomaly(this,'corriger')"><i class="fa-solid fa-wrench"></i> Corriger</button>
+            <button class="btn btn-outline btn-sm" onclick="handleAnomaly(this,'signaler')"><i class="fa-solid fa-flag"></i> Signaler</button>
+            <button class="btn btn-outline btn-sm" style="color: var(--gray-500); border-color: var(--gray-300);" onclick="handleAnomaly(this,'ignorer')"><i class="fa-solid fa-eye-slash"></i> Ignorer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommandations IA -->
+    <div style="margin-top: 2rem;">
+      <h3 style="font-family: 'Source Serif 4', Georgia, serif; font-size: 1.2rem; font-weight: 700; color: var(--blue-900); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--green-500);"></i> Recommandations IA
+      </h3>
+      <div class="reco-card">
+        <div class="reco-icon"><i class="fa-solid fa-file-circle-plus"></i></div>
+        <div>
+          <div class="reco-text"><strong>Régulariser les 4 trimestres manquants</strong> — Déposer un dossier auprès de la CARSAT avec les bulletins de paie BNP Paribas (déc. 1998) et le certificat de début d'activité indépendante.</div>
+          <div class="reco-gain"><i class="fa-solid fa-arrow-up"></i> Gain potentiel : +89 €/mois</div>
+        </div>
+      </div>
+      <div class="reco-card">
+        <div class="reco-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+        <div>
+          <div class="reco-text"><strong>Corriger l'écart de salaire 2003</strong> — Fournir les déclarations fiscales 2003 et les bulletins originaux au RSI/SSI pour rectifier la base de calcul des droits.</div>
+          <div class="reco-gain"><i class="fa-solid fa-arrow-up"></i> Gain potentiel : +34 €/mois</div>
+        </div>
+      </div>
+      <div class="reco-card">
+        <div class="reco-icon"><i class="fa-solid fa-building-columns"></i></div>
+        <div>
+          <div class="reco-text"><strong>Compléter les cotisations RSI 2000-2002</strong> — Demander un rachat de trimestres au SSI (coût estimé : 4 200 €) ou fournir les justificatifs de cotisations minimales.</div>
+          <div class="reco-gain"><i class="fa-solid fa-arrow-up"></i> Gain potentiel : +47 €/mois — Retour sur investissement : 7,4 ans</div>
+        </div>
+      </div>
+      <div class="reco-card">
+        <div class="reco-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+        <div>
+          <div class="reco-text"><strong>Réclamer les 847 points AGIRC-ARRCO</strong> — Contacter l'AGIRC-ARRCO avec le relevé de points et les bulletins du Crédit Agricole 2015 pour demander le report.</div>
+          <div class="reco-gain"><i class="fa-solid fa-arrow-up"></i> Gain potentiel : +12 €/mois</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 5: Estimation -->
+  <div class="tab-content" id="tab-estimation">
+    <h2 class="section-title">Estimation des droits</h2>
+    <p class="section-subtitle">Projection de votre pension de retraite selon les données analysées.</p>
+
+    <div class="confidence-badge">
+      <i class="fa-solid fa-shield-check"></i>
+      Fiabilité de l'estimation : <strong>94%</strong>
+      <span style="font-size:0.75rem; font-weight:400; color:#4b5563; margin-left:4px;">(basée sur 8 documents analysés)</span>
+    </div>
+
+    <div class="estimation-grid">
+      <div class="card">
+        <h3 style="font-size: 1rem; font-weight: 700; color: var(--blue-900); margin-bottom: 1rem;">
+          <i class="fa-solid fa-list-check" style="color: var(--blue-500); margin-right: 6px;"></i>
+          Détail par régime
+        </h3>
+        <table class="regime-table">
+          <thead>
+            <tr>
+              <th>Régime</th>
+              <th>Trimestres</th>
+              <th>Points</th>
+              <th>Pension estimée</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>CNAV (base)</strong></td>
+              <td>142 / 172</td>
+              <td>—</td>
+              <td class="amount">1 485 €</td>
+            </tr>
+            <tr>
+              <td><strong>AGIRC-ARRCO</strong></td>
+              <td>138</td>
+              <td>12 847</td>
+              <td class="amount">892 €</td>
+            </tr>
+            <tr>
+              <td><strong>RSI (indépendant)</strong></td>
+              <td>28</td>
+              <td>—</td>
+              <td class="amount">234 €</td>
+            </tr>
+            <tr>
+              <td><strong>Total</strong></td>
+              <td>—</td>
+              <td>—</td>
+              <td class="amount" style="font-size: 1.15rem;">2 611 €</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size: 1rem; font-weight: 700; color: var(--blue-900); margin-bottom: 1rem;">
+          <i class="fa-solid fa-chart-column" style="color: var(--blue-500); margin-right: 6px;"></i>
+          Pension selon l'âge de départ
+        </h3>
+        <div class="chart-container">
+          <canvas id="pensionChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly breakdown comparison -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+      <h3 style="font-size: 1rem; font-weight: 700; color: var(--blue-900); margin-bottom: 1rem;">
+        <i class="fa-solid fa-table-columns" style="color: var(--blue-500); margin-right: 6px;"></i>
+        Comparaison mensuelle selon l'âge de départ
+      </h3>
+      <table class="monthly-table">
+        <thead>
+          <tr>
+            <th>Composante</th>
+            <th>62 ans (décote)</th>
+            <th>64 ans 6m (taux plein)</th>
+            <th>67 ans (surcote)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CNAV (base)</td>
+            <td>1 198 €</td>
+            <td class="highlight-val">1 485 €</td>
+            <td>1 742 €</td>
+          </tr>
+          <tr>
+            <td>AGIRC-ARRCO</td>
+            <td>758 €</td>
+            <td class="highlight-val">892 €</td>
+            <td>1 038 €</td>
+          </tr>
+          <tr>
+            <td>RSI (indépendant)</td>
+            <td>224 €</td>
+            <td class="highlight-val">234 €</td>
+            <td>265 €</td>
+          </tr>
+          <tr>
+            <td><strong>Total mensuel</strong></td>
+            <td><strong>2 180 €</strong></td>
+            <td class="highlight-val"><strong>2 611 €</strong></td>
+            <td><strong>3 045 €</strong></td>
+          </tr>
+          <tr style="background: none;">
+            <td><strong>Total annuel</strong></td>
+            <td><strong>26 160 €</strong></td>
+            <td class="highlight-val"><strong>31 332 €</strong></td>
+            <td><strong>36 540 €</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-callout">
+      <i class="fa-solid fa-info-circle" style="font-size: 1.1rem;"></i>
+      <div class="info-callout-text">
+        <strong>Taux plein atteint à 64 ans et 6 mois</strong> — 172 trimestres requis pour la génération 1963. Avec 142 trimestres validés à ce jour, il vous reste 30 trimestres à acquérir, soit environ 7 ans et 6 mois d'activité.
+      </div>
+    </div>
+
+    <div class="stat-comparison">
+      <i class="fa-solid fa-arrow-trend-up"></i>
+      <div class="stat-comparison-text">
+        Votre pension estimée à taux plein (<strong>2 611 €/mois</strong>) est <strong>18% supérieure</strong> à la moyenne nationale (2 211 €/mois, source DREES 2024).
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 6: Export -->
+  <div class="tab-content" id="tab-export">
+    <h2 class="section-title">Exporter le rapport</h2>
+    <p class="section-subtitle">Téléchargez votre bilan retraite complet au format PowerPoint ou Word.</p>
+
+    <div class="export-section">
+      <div class="export-section-title">
+        <i class="fa-solid fa-file-powerpoint" style="color: #d35230;"></i>
+        Aperçu PowerPoint (4 slides)
+      </div>
+      <div class="slides-grid">
+        <div class="slide-card">
+          <div class="slide-preview cover">
+            <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">🏛️</div>
+            <div class="slide-preview-title">Bilan Retraite</div>
+            <div class="slide-preview-sub">Rapport Complet — Martin Dupont</div>
+            <div class="slide-preview-sub" style="margin-top: 4px;">Généré le 17 mars 2026</div>
+          </div>
+          <div class="slide-label">Slide 1 — Page de couverture</div>
+        </div>
+
+        <div class="slide-card">
+          <div class="slide-preview" style="background: var(--gray-50);">
+            <div style="font-size: 0.75rem; font-weight: 600; color: var(--blue-900); margin-bottom: 0.75rem;">Synthèse de carrière</div>
+            <div class="mini-timeline">
+              <div style="flex: 7; background: #3b82f6;"></div>
+              <div style="flex: 6; background: #1e3a5f;"></div>
+              <div style="flex: 7; background: #22c55e;"></div>
+              <div style="flex: 7; background: #f97316;"></div>
+              <div style="flex: 6; background: #14b8a6;"></div>
+              <div style="flex: 6; background: #8b5cf6;"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; width: 80%; font-size: 0.6rem; color: var(--gray-400); margin-top: 4px;">
+              <span>1985</span><span>2024</span>
+            </div>
+            <div style="font-size: 0.7rem; color: var(--gray-500); margin-top: 0.5rem;">6 employeurs — 39 ans — 156 trimestres</div>
+          </div>
+          <div class="slide-label">Slide 2 — Synthèse carrière</div>
+        </div>
+
+        <div class="slide-card">
+          <div class="slide-preview" style="background: var(--gray-50);">
+            <div style="font-size: 0.75rem; font-weight: 600; color: var(--blue-900); margin-bottom: 0.5rem;">Anomalies détectées</div>
+            <div style="display: flex; flex-direction: column; gap: 4px; width: 80%;">
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 0.65rem;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; flex-shrink: 0;"></span>
+                <span style="color: var(--gray-600);">4 trimestres manquants</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 0.65rem;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #f97316; flex-shrink: 0;"></span>
+                <span style="color: var(--gray-600);">Écart salaire 2003</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 0.65rem;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #f97316; flex-shrink: 0;"></span>
+                <span style="color: var(--gray-600);">Régime indépendant incomplet</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 0.65rem;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #eab308; flex-shrink: 0;"></span>
+                <span style="color: var(--gray-600);">2 anomalies mineures</span>
+              </div>
+            </div>
+          </div>
+          <div class="slide-label">Slide 3 — Anomalies</div>
+        </div>
+
+        <div class="slide-card">
+          <div class="slide-preview" style="background: var(--gray-50);">
+            <div style="font-size: 0.75rem; font-weight: 600; color: var(--blue-900); margin-bottom: 0.5rem;">Estimation des droits</div>
+            <div class="mini-bars">
+              <div>
+                <div class="mini-bar" style="height: 28px; background: var(--blue-300);"></div>
+                <div style="font-size: 0.55rem; color: var(--gray-400); text-align: center; margin-top: 2px;">62 ans</div>
+              </div>
+              <div>
+                <div class="mini-bar" style="height: 40px; background: var(--blue-500);"></div>
+                <div style="font-size: 0.55rem; color: var(--gray-400); text-align: center; margin-top: 2px;">64 ans</div>
+              </div>
+              <div>
+                <div class="mini-bar" style="height: 50px; background: var(--blue-600);"></div>
+                <div style="font-size: 0.55rem; color: var(--gray-400); text-align: center; margin-top: 2px;">67 ans</div>
+              </div>
+            </div>
+            <div style="font-size: 0.7rem; color: var(--blue-600); font-weight: 700; margin-top: 0.5rem;">2 611 €/mois à taux plein</div>
+          </div>
+          <div class="slide-label">Slide 4 — Estimation</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="export-section">
+      <div class="export-section-title">
+        <i class="fa-solid fa-file-word" style="color: #2b579a;"></i>
+        Aperçu Word
+      </div>
+      <div class="word-preview">
+        <h3>Bilan Retraite — Martin Dupont</h3>
+        <p style="color: var(--gray-400); font-size: 0.8rem;">Rapport généré le 17 mars 2026 par RetraiteIA</p>
+        <h4>1. Synthèse du parcours professionnel</h4>
+        <p>Le parcours professionnel de M. Dupont s'étend sur 39 années, de 1985 à 2024, auprès de 6 employeurs distincts dans les secteurs bancaire, assurantiel et du conseil financier.</p>
+        <div class="line-placeholder"></div>
+        <div class="line-placeholder short"></div>
+        <h4>2. Anomalies identifiées</h4>
+        <p>L'analyse croisée des documents a permis d'identifier 5 anomalies dont 1 critique impactant directement le calcul de la pension.</p>
+        <div class="line-placeholder"></div>
+        <div class="line-placeholder"></div>
+        <div class="line-placeholder short"></div>
+        <h4>3. Estimation des droits</h4>
+        <p>La pension mensuelle estimée à taux plein (64 ans et 6 mois) s'élève à 2 611 €, répartie sur trois régimes : CNAV, AGIRC-ARRCO et RSI.</p>
+        <div class="line-placeholder"></div>
+        <div class="line-placeholder short"></div>
+      </div>
+    </div>
+
+    <div class="export-buttons">
+      <button class="export-btn export-btn-pptx" onclick="exportPowerPoint(this)">
+        <i class="fa-solid fa-file-powerpoint"></i> Exporter PowerPoint
+        <div class="progress-bar"></div>
+      </button>
+      <button class="export-btn export-btn-word" onclick="exportWord(this)">
+        <i class="fa-solid fa-file-word"></i> Exporter Word
+        <div class="progress-bar"></div>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Slide Zoom Overlay -->
+<div class="slide-zoom-overlay" id="slideZoomOverlay" onclick="closeSlideZoom(event)">
+  <button class="slide-zoom-close" onclick="closeSlideZoom(event)"><i class="fa-solid fa-xmark"></i></button>
+  <div class="slide-zoom-content" id="slideZoomContent"></div>
+</div>
+
+<script>
+// ====== Document Upload System ======
+let docIdCounter = 0;
+
+function getFileType(filename) {
+  const ext = filename.split('.').pop().toLowerCase();
+  const map = {
+    'pdf': { label: 'Document PDF', icon: 'fa-file-pdf' },
+    'docx': { label: 'Document Word', icon: 'fa-file-word' },
+    'doc': { label: 'Document Word', icon: 'fa-file-word' },
+    'xlsx': { label: 'Tableur Excel', icon: 'fa-file-excel' },
+    'xls': { label: 'Tableur Excel', icon: 'fa-file-excel' },
+    'jpg': { label: 'Image', icon: 'fa-file-image' },
+    'jpeg': { label: 'Image', icon: 'fa-file-image' },
+    'png': { label: 'Image', icon: 'fa-file-image' },
+    'txt': { label: 'Fichier texte', icon: 'fa-file-lines' },
+  };
+  return map[ext] || { label: 'Fichier', icon: 'fa-file' };
+}
+
+function formatFileSize(bytes) {
+  if (bytes < 1024) return bytes + ' o';
+  if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' Ko';
+  return (bytes / (1024 * 1024)).toFixed(1) + ' Mo';
+}
+
+function updateDocCounter() {
+  const count = document.querySelectorAll('#file-grid .file-card').length;
+  document.getElementById('doc-counter').innerHTML =
+    '<i class="fa-solid fa-folder-open" style="color: var(--blue-500); margin-right: 6px;"></i>' +
+    count + ' document' + (count > 1 ? 's' : '') + ' chargé' + (count > 1 ? 's' : '');
+}
+
+function createFileCard(name, size, typeBadge, iconClass, status, docId) {
+  const card = document.createElement('div');
+  card.className = 'file-card new-card';
+  card.setAttribute('data-doc-id', docId);
+
+  const statusHtml = status === 'analysed'
+    ? '<div class="file-check"><i class="fa-solid fa-circle-check"></i> Analysé</div>'
+    : '<div class="file-pending"><i class="fa-solid fa-hourglass-half"></i> En attente d\'analyse</div>';
+
+  card.innerHTML =
+    '<div class="file-icon"><i class="fa-solid ' + iconClass + '"></i></div>' +
+    '<div class="file-info">' +
+      '<div class="file-name">' + name + '</div>' +
+      '<div class="file-meta">' +
+        '<span>' + size + '</span>' +
+        '<span class="file-badge">' + typeBadge + '</span>' +
+      '</div>' +
+    '</div>' +
+    statusHtml +
+    '<button class="file-delete" title="Supprimer" onclick="removeDocument(\'' + docId + '\')">' +
+      '<i class="fa-solid fa-xmark"></i>' +
+    '</button>';
+
+  return card;
+}
+
+function addUploadedFiles(files) {
+  const grid = document.getElementById('file-grid');
+  for (const file of files) {
+    const ft = getFileType(file.name);
+    const id = 'doc-' + (++docIdCounter);
+    const card = createFileCard(file.name, formatFileSize(file.size), ft.label, ft.icon, 'pending', id);
+    grid.appendChild(card);
+  }
+  updateDocCounter();
+}
+
+function removeDocument(docId) {
+  const card = document.querySelector('[data-doc-id="' + docId + '"]');
+  if (card) {
+    card.style.transition = 'opacity 0.2s, transform 0.2s';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.95)';
+    setTimeout(() => { card.remove(); updateDocCounter(); }, 200);
+  }
+}
+
+function showToast(message) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = '<i class="fa-solid fa-check-circle" style="margin-right: 8px; color: #4ade80;"></i>' + message;
+  document.body.appendChild(toast);
+  setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3000);
+}
+
+function loadTestDocuments() {
+  const testDocs = [
+    { name: 'Attestation_Employeur_AXA_2012.pdf', size: '156 Ko', badge: 'Attestation employeur' },
+    { name: 'Contrat_BNP_1992.pdf', size: '203 Ko', badge: 'Contrat de travail' },
+    { name: 'Fiche_Paie_MAIF_Jan2024.pdf', size: '98 Ko', badge: 'Bulletin de salaire' },
+    { name: 'Relevé_Points_AGIRC_2023.pdf', size: '178 Ko', badge: 'Relevé de points' },
+    { name: 'Notification_RSI_2005.pdf', size: '134 Ko', badge: 'Notification RSI' },
+  ];
+
+  const grid = document.getElementById('file-grid');
+  testDocs.forEach((doc, i) => {
+    setTimeout(() => {
+      const id = 'test-' + (++docIdCounter);
+      const card = createFileCard(doc.name, doc.size, doc.badge, 'fa-file-pdf', 'pending', id);
+      grid.appendChild(card);
+      updateDocCounter();
+
+      // Animate to "Analysé" after a short delay
+      setTimeout(() => {
+        const pendingEl = card.querySelector('.file-pending');
+        if (pendingEl) {
+          pendingEl.outerHTML = '<div class="file-check"><i class="fa-solid fa-circle-check"></i> Analysé</div>';
+        }
+      }, 600 + i * 150);
+    }, i * 200);
+  });
+
+  setTimeout(() => { showToast('5 documents de test ajoutés'); }, 200);
+}
+
+// Dropzone & file input wiring
+(function() {
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+
+  dropzone.addEventListener('click', () => fileInput.click());
+
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length) {
+      addUploadedFiles(e.target.files);
+      fileInput.value = '';
+    }
+  });
+
+  dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('drag-over');
+  });
+
+  dropzone.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('drag-over');
+  });
+
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('drag-over');
+    if (e.dataTransfer.files.length) {
+      addUploadedFiles(e.dataTransfer.files);
+    }
+  });
+})();
+
+// Tab navigation
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+
+    // Init chart when estimation tab shown
+    if (btn.dataset.tab === 'estimation' && !window.chartInit) {
+      initChart();
+      window.chartInit = true;
+    }
+  });
+});
+
+// Chart.js with gradient fills
+function initChart() {
+  const ctx = document.getElementById('pensionChart').getContext('2d');
+  // Create gradient fills for each bar
+  const grad1 = ctx.createLinearGradient(0, 0, 0, 280);
+  grad1.addColorStop(0, '#93c5fd');
+  grad1.addColorStop(1, 'rgba(147,197,253,0.3)');
+  const grad2 = ctx.createLinearGradient(0, 0, 0, 280);
+  grad2.addColorStop(0, '#3b82f6');
+  grad2.addColorStop(1, 'rgba(59,130,246,0.3)');
+  const grad3 = ctx.createLinearGradient(0, 0, 0, 280);
+  grad3.addColorStop(0, '#1e3a5f');
+  grad3.addColorStop(1, 'rgba(30,58,95,0.3)');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['62 ans', '64 ans 6m (taux plein)', '67 ans'],
+      datasets: [{
+        label: 'Pension mensuelle estimée (€)',
+        data: [2180, 2611, 3045],
+        backgroundColor: [grad1, grad2, grad3],
+        borderColor: ['#93c5fd', '#3b82f6', '#1e3a5f'],
+        borderWidth: 2,
+        borderRadius: 10,
+        borderSkipped: false,
+        barThickness: 64,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 1200, easing: 'easeOutQuart' },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1f2937',
+          titleFont: { family: 'Inter', size: 13 },
+          bodyFont: { family: 'Inter', size: 12 },
+          padding: 14,
+          cornerRadius: 10,
+          displayColors: false,
+          callbacks: {
+            title: ctx => ctx[0].label,
+            label: ctx => ctx.parsed.y.toLocaleString('fr-FR') + ' €/mois',
+            afterLabel: ctx => {
+              const annual = ctx.parsed.y * 12;
+              return annual.toLocaleString('fr-FR') + ' €/an';
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 3500,
+          ticks: {
+            font: { family: 'Inter', size: 11 },
+            color: '#9ca3af',
+            callback: v => v.toLocaleString('fr-FR') + ' €'
+          },
+          grid: { color: '#f3f4f6' }
+        },
+        x: {
+          ticks: {
+            font: { family: 'Inter', size: 12, weight: '500' },
+            color: '#374151'
+          },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+// Pipeline animation
+let pipelineRunning = false;
+
+const logMessages = [
+  { agent: 'Lecteur RIS', msg: 'Initialisation du modèle OCR — chargement du relevé individuel de situation...' },
+  { agent: 'Lecteur RIS', msg: 'Extraction NLP des périodes d\'activité : 6 blocs identifiés (1985-2024)' },
+  { agent: 'Lecteur RIS', msg: '156 trimestres validés, 6 employeurs, 3 régimes détectés', success: true },
+  { agent: 'Analyseur Bulletins', msg: 'Lecture des 8 bulletins de paie — extraction des montants bruts et cotisations...' },
+  { agent: 'Analyseur Bulletins', msg: 'Cross-validation bulletins ↔ déclarations CNAV en cours...' },
+  { agent: 'Analyseur Bulletins', msg: '⚠ Écart significatif détecté année 2003 : RSI=32 400€ vs bulletins=38 200€ (-15,2%)', warn: true },
+  { agent: 'Analyseur Bulletins', msg: 'Vérification des 12 847 points AGIRC-ARRCO — analyse terminée', success: true },
+  { agent: 'Expert Régimes', msg: 'Identification des régimes applicables par période — règles de calcul chargées...' },
+  { agent: 'Expert Régimes', msg: 'Régimes identifiés : CNAV (salarié), AGIRC-ARRCO (cadre), RSI/SSI (TNS 1998-2005)' },
+  { agent: 'Expert Régimes', msg: '⚠ 4 trimestres manquants détectés : T1-T4 1999 — transition BNP→indépendant', warn: true },
+  { agent: 'Expert Régimes', msg: 'Cartographie complète — 3 régimes, 156/172 trimestres, taux plein à 64 ans 6 mois', success: true },
+  { agent: 'Calculateur', msg: 'Calcul pension CNAV : SAM=42 318€, taux=50%, durée=142/172 → 1 485€/mois' },
+  { agent: 'Calculateur', msg: 'Calcul AGIRC-ARRCO : 12 847 pts × valeur 1,4159€ × coeff. minoration → 892€/mois' },
+  { agent: 'Calculateur', msg: 'Pension totale estimée à taux plein : 2 611 €/mois (31 332 €/an)', success: true },
+  { agent: 'Calculateur', msg: 'Rapport finalisé — 5 anomalies, impact total -182€/mois — fiabilité 94%', success: true },
+];
+
+function getTime(offset) {
+  const d = new Date();
+  d.setSeconds(d.getSeconds() + offset);
+  return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+function addLog(index, timeOffset) {
+  const panel = document.getElementById('log-panel');
+  const m = logMessages[index];
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  const warnColor = m.warn ? ' style="color: #fbbf24;"' : '';
+  const successAttr = m.success ? ' class="log-success"' : '';
+  line.innerHTML = `<span class="log-time">[${getTime(timeOffset)}]</span> <span class="log-agent">${m.agent}</span> : <span${successAttr}${warnColor}>${m.msg}</span>`;
+  panel.appendChild(line);
+  panel.scrollTop = panel.scrollHeight;
+}
+
+function setAgentState(num, state) {
+  const card = document.getElementById('agent-' + num);
+  const status = document.getElementById('status-' + num);
+  card.classList.remove('active', 'done', 'idle-pulse');
+  if (state === 'active') {
+    card.classList.add('active');
+    status.className = 'agent-status status-running';
+    status.innerHTML = '<span class="spinner"></span> En cours...';
+    spawnParticles(card);
+  } else if (state === 'done') {
+    card.classList.add('done');
+    status.className = 'agent-status status-done';
+    status.innerHTML = '<i class="fa-solid fa-circle-check"></i> Terminé';
+  }
+}
+
+// Particle effect system
+function spawnParticles(agentCard) {
+  const field = document.getElementById('particle-field');
+  const rect = agentCard.getBoundingClientRect();
+  const containerRect = document.getElementById('pipeline-container').getBoundingClientRect();
+  const cx = rect.left - containerRect.left + rect.width / 2;
+  const cy = rect.top - containerRect.top + rect.height / 2;
+  for (let i = 0; i < 8; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = cx + 'px';
+    p.style.top = cy + 'px';
+    p.style.setProperty('--tx', (Math.random() * 80 - 40) + 'px');
+    p.style.setProperty('--ty', (Math.random() * 60 - 30) + 'px');
+    p.style.animation = 'particleFloat ' + (0.6 + Math.random() * 0.6) + 's ease-out forwards';
+    p.style.animationDelay = (i * 0.05) + 's';
+    field.appendChild(p);
+    setTimeout(() => p.remove(), 1500);
+  }
+}
+
+function setArrowState(num, state) {
+  const arrow = document.getElementById('arrow-' + num);
+  arrow.classList.remove('active', 'done', 'animating');
+  // Remove glow dots
+  arrow.querySelectorAll('.glow-dot').forEach(d => d.remove());
+  if (state === 'animating') {
+    arrow.classList.add('animating', 'active');
+    // Add glowing dots
+    const icon = arrow.querySelector('i');
+    for (let i = 0; i < 3; i++) {
+      const dot = document.createElement('span');
+      dot.className = 'glow-dot';
+      dot.style.animationDelay = (i * 0.2) + 's';
+      arrow.insertBefore(dot, icon);
+    }
+  } else if (state === 'done') {
+    arrow.classList.add('done');
+  }
+}
+
+async function launchPipeline() {
+  if (pipelineRunning) return;
+  pipelineRunning = true;
+
+  const btn = document.getElementById('btn-launch');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Analyse en cours...';
+  btn.style.opacity = '0.7';
+
+  const panel = document.getElementById('log-panel');
+  panel.innerHTML = '';
+
+  // Reset all
+  for (let i = 1; i <= 4; i++) {
+    setAgentState(i, 'waiting');
+    document.getElementById('status-' + i).className = 'agent-status status-waiting';
+    document.getElementById('status-' + i).innerHTML = '<i class="fa-solid fa-clock"></i> En attente';
+  }
+  for (let i = 1; i <= 3; i++) setArrowState(i, '');
+
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  let logIndex = 0;
+  let timeOffset = 0;
+
+  // Agent 1
+  setAgentState(1, 'active');
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(700);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(700);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(600);
+  setAgentState(1, 'done');
+
+  // Arrow 1
+  setArrowState(1, 'animating');
+  await wait(500);
+  setArrowState(1, 'done');
+
+  // Agent 2
+  setAgentState(2, 'active');
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(600);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(700);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(500);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(400);
+  setAgentState(2, 'done');
+
+  // Arrow 2
+  setArrowState(2, 'animating');
+  await wait(500);
+  setArrowState(2, 'done');
+
+  // Agent 3
+  setAgentState(3, 'active');
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(600);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(700);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(500);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(400);
+  setAgentState(3, 'done');
+
+  // Arrow 3
+  setArrowState(3, 'animating');
+  await wait(500);
+  setArrowState(3, 'done');
+
+  // Agent 4
+  setAgentState(4, 'active');
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(600);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(700);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(500);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(400);
+  setAgentState(4, 'done');
+
+  btn.innerHTML = '<i class="fa-solid fa-check"></i> Analyse terminée';
+  btn.style.background = '#16a34a';
+  btn.style.opacity = '1';
+
+  await wait(2000);
+  btn.innerHTML = '<i class="fa-solid fa-play"></i> Relancer l\'analyse';
+  btn.style.background = '';
+  btn.disabled = false;
+  btn.style.opacity = '';
+  pipelineRunning = false;
+}
+
+// Export helpers
+function triggerDownload(htmlContent, filename) {
+  const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function animateExport(btn, filename, downloadFn) {
+  if (btn.classList.contains('exporting') || btn.classList.contains('exported')) return;
+  btn.classList.add('exporting');
+  const originalHTML = btn.innerHTML;
+
+  setTimeout(() => {
+    btn.classList.remove('exporting');
+    btn.classList.add('exported');
+    btn.innerHTML = `<i class="fa-solid fa-check"></i> ${filename} téléchargé`;
+    btn.style.opacity = '0.85';
+    downloadFn();
+
+    setTimeout(() => {
+      btn.classList.remove('exported');
+      btn.innerHTML = originalHTML;
+      btn.style.opacity = '';
+    }, 3000);
+  }, 1800);
+}
+
+// PowerPoint export (real .pptx via PptxGenJS)
+function exportPowerPoint(btn) {
+  const filename = 'RetraiteIA_Bilan_Retraite_2026.pptx';
+  animateExport(btn, filename, () => {
+    const pptx = new PptxGenJS();
+    pptx.layout = 'LAYOUT_WIDE';
+    pptx.author = 'RetraiteIA';
+    pptx.subject = 'Bilan Retraite';
+
+    // ========== SLIDE 1 — Title ==========
+    const slide1 = pptx.addSlide();
+    slide1.background = { color: '1e3a5f' };
+    slide1.addText('\u{1F3DB}\u{FE0F}', { x: 0, y: 1.0, w: '100%', fontSize: 60, align: 'center', color: 'FFFFFF' });
+    slide1.addText('Bilan Retraite', { x: 0, y: 1.9, w: '100%', fontSize: 18, align: 'center', color: '93c5fd', fontFace: 'Arial' });
+    slide1.addText('Rapport Complet', { x: 0, y: 2.4, w: '100%', fontSize: 40, bold: true, align: 'center', color: 'FFFFFF', fontFace: 'Arial' });
+    slide1.addText('Mars 2026 \u2014 RetraiteIA', { x: 0, y: 3.4, w: '100%', fontSize: 14, align: 'center', color: '93c5fd', fontFace: 'Arial' });
+
+    // ========== SLIDE 2 — Synth\u00e8se carri\u00e8re ==========
+    const slide2 = pptx.addSlide();
+    slide2.background = { color: 'f0f7ff' };
+    slide2.addText('\u{1F4CB} Synth\u00e8se de carri\u00e8re', { x: 0.5, y: 0.3, w: 8, fontSize: 28, bold: true, color: '1e3a5f', fontFace: 'Arial' });
+
+    // Key stats row
+    const stats = [
+      { val: '39 ans', lbl: "d'activit\u00e9 (1985-2024)" },
+      { val: '6', lbl: 'employeurs' },
+      { val: '156', lbl: 'trimestres valid\u00e9s' },
+      { val: '3', lbl: 'r\u00e9gimes de retraite' }
+    ];
+    stats.forEach((s, i) => {
+      const xPos = 0.5 + i * 3.1;
+      slide2.addText(s.val, { x: xPos, y: 1.0, w: 2.8, fontSize: 24, bold: true, color: '2563eb', align: 'center', fontFace: 'Arial' });
+      slide2.addText(s.lbl, { x: xPos, y: 1.5, w: 2.8, fontSize: 11, color: '6b7280', align: 'center', fontFace: 'Arial' });
+    });
+
+    // Career table
+    const careerRows = [
+      [{ text: 'P\u00e9riode', options: { bold: true, color: 'FFFFFF', fill: { color: '1e3a5f' } } },
+       { text: 'Employeur', options: { bold: true, color: 'FFFFFF', fill: { color: '1e3a5f' } } },
+       { text: 'Poste', options: { bold: true, color: 'FFFFFF', fill: { color: '1e3a5f' } } }],
+      ['1985-1992', 'Soci\u00e9t\u00e9 G\u00e9n\u00e9rale', 'Cadre bancaire'],
+      ['1992-1998', 'BNP Paribas', 'Responsable cr\u00e9dit'],
+      ['1998-2005', 'Ind\u00e9pendant', 'Consultant financier'],
+      ['2005-2012', 'AXA Assurances', 'Directeur r\u00e9gional'],
+      ['2012-2018', 'Cr\u00e9dit Agricole', "Directeur d'agence"],
+      ['2018-2024', 'MAIF', 'Directeur commercial']
+    ];
+    slide2.addTable(careerRows, {
+      x: 0.5, y: 2.1, w: 12.0,
+      fontSize: 12, fontFace: 'Arial', color: '374151',
+      border: { type: 'solid', pt: 0.5, color: 'D1D5DB' },
+      rowH: 0.4,
+      colW: [2.5, 4.5, 5.0],
+      autoPage: false
+    });
+
+    // ========== SLIDE 3 — Anomalies d\u00e9tect\u00e9es ==========
+    const slide3 = pptx.addSlide();
+    slide3.background = { color: 'FFFFFF' };
+    slide3.addText('\u26A0\uFE0F Anomalies d\u00e9tect\u00e9es', { x: 0.5, y: 0.3, w: 8, fontSize: 28, bold: true, color: '1e3a5f', fontFace: 'Arial' });
+
+    const anomalyRows = [
+      [{ text: 'S\u00e9v\u00e9rit\u00e9', options: { bold: true, color: 'FFFFFF', fill: { color: '1e3a5f' } } },
+       { text: 'Anomalie', options: { bold: true, color: 'FFFFFF', fill: { color: '1e3a5f' } } },
+       { text: 'Impact', options: { bold: true, color: 'FFFFFF', fill: { color: '1e3a5f' } } }],
+      [{ text: '\u{1F534} Critique', options: { color: 'DC2626', bold: true } }, '4 trimestres manquants (1998-1999)', '-89\u20AC/mois'],
+      [{ text: '\u{1F7E0} Important', options: { color: 'EA580C', bold: true } }, '\u00C9cart salaire 2003 (-15.2%)', '-34\u20AC/mois'],
+      [{ text: '\u{1F7E0} Important', options: { color: 'EA580C', bold: true } }, 'Cotisations RSI partielles 2000-2002', '-47\u20AC/mois'],
+      [{ text: '\u{1F7E1} Mineur', options: { color: 'CA8A04', bold: true } }, 'Doublon trimestre T3 2012', 'Aucun'],
+      [{ text: '\u{1F7E1} Mineur', options: { color: 'CA8A04', bold: true } }, 'Points AGIRC-ARRCO non report\u00e9s 2015', '-12\u20AC/mois']
+    ];
+    slide3.addTable(anomalyRows, {
+      x: 0.5, y: 1.1, w: 12.0,
+      fontSize: 12, fontFace: 'Arial', color: '374151',
+      border: { type: 'solid', pt: 0.5, color: 'D1D5DB' },
+      rowH: 0.5,
+      colW: [2.5, 6.5, 3.0],
+      autoPage: false
+    });
+
+    // ========== SLIDE 4 — Estimation des droits ==========
+    const slide4 = pptx.addSlide();
+    slide4.background = { color: 'f9fafb' };
+    slide4.addText('\u{1F4B0} Estimation des droits \u00e0 la retraite', { x: 0.5, y: 0.3, w: 10, fontSize: 28, bold: true, color: '1e3a5f', fontFace: 'Arial' });
+
+    // Pension table
+    const pensionRows = [
+      [{ text: 'R\u00e9gime', options: { bold: true, color: 'FFFFFF', fill: { color: '1e3a5f' } } },
+       { text: 'Trimestres', options: { bold: true, color: 'FFFFFF', fill: { color: '1e3a5f' } } },
+       { text: 'Pension mensuelle', options: { bold: true, color: 'FFFFFF', fill: { color: '1e3a5f' } } }],
+      ['CNAV (base)', '142/172', '1 485\u20AC'],
+      ['AGIRC-ARRCO', '138', '892\u20AC'],
+      ['RSI (ind\u00e9pendant)', '28', '234\u20AC'],
+      [{ text: 'Total', options: { bold: true, color: '1e3a5f' } },
+       { text: '\u2014', options: { bold: true, color: '1e3a5f' } },
+       { text: '2 611\u20AC', options: { bold: true, color: '1e3a5f', fontSize: 14 } }]
+    ];
+    slide4.addTable(pensionRows, {
+      x: 0.5, y: 1.1, w: 7.0,
+      fontSize: 12, fontFace: 'Arial', color: '374151',
+      border: { type: 'solid', pt: 0.5, color: 'D1D5DB' },
+      rowH: 0.45,
+      colW: [3.0, 2.0, 2.0],
+      autoPage: false
+    });
+
+    // Bar chart — pension projections
+    slide4.addChart(pptx.charts.BAR, [
+      { name: 'Pension mensuelle (\u20AC)',
+        labels: ['62 ans', '64 ans', '67 ans'],
+        values: [2180, 2611, 3045] }
+    ], {
+      x: 8.0, y: 1.0, w: 4.5, h: 3.5,
+      showValue: true,
+      valueFontSize: 11,
+      catAxisLabelFontSize: 12,
+      valAxisLabelFontSize: 10,
+      chartColors: ['3b82f6'],
+      valAxisHidden: true,
+      catGridLine: { style: 'none' },
+      valGridLine: { style: 'none' },
+      showLegend: false,
+      dataLabelPosition: 'outEnd',
+      dataLabelFormatCode: '#,##0"\u20AC"'
+    });
+
+    slide4.addText('Taux plein atteint \u00e0 64 ans et 6 mois', {
+      x: 0.5, y: 4.2, w: 12, fontSize: 13, italic: true, color: '6b7280', fontFace: 'Arial'
+    });
+
+    // Generate and download
+    pptx.writeFile({ fileName: filename });
+  });
+}
+
+// Word export (HTML document)
+function exportWord(btn) {
+  const filename = 'RetraiteIA_Rapport_Complet_2026.html';
+  animateExport(btn, filename, () => {
+    const html = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RetraiteIA &mdash; Rapport Complet Martin Dupont</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;600;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Source Serif 4', 'Georgia', serif; color: #1f2937; background: #f5f5f5; line-height: 1.7; }
+.page { max-width: 800px; margin: 0 auto; background: #fff; padding: 64px 72px; box-shadow: 0 2px 24px rgba(0,0,0,0.08); }
+.header { border-bottom: 3px solid #1e3a5f; padding-bottom: 24px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
+.header-left h1 { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 800; color: #1e3a5f; }
+.header-left p { font-size: 14px; color: #6b7280; margin-top: 4px; }
+.header-right { text-align: right; font-family: 'Inter', sans-serif; }
+.header-right .brand { font-size: 20px; font-weight: 700; color: #2563eb; }
+.header-right .date { font-size: 12px; color: #9ca3af; }
+h2 { font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 700; color: #1e3a5f; margin-top: 40px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #e5e7eb; }
+h2 .num { color: #2563eb; }
+p { margin-bottom: 14px; font-size: 15px; }
+table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+th { background: #1e3a5f; color: #fff; font-family: 'Inter', sans-serif; font-weight: 600; text-align: left; padding: 10px 14px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; }
+tr:nth-child(even) { background: #f9fafb; }
+tr.total td { font-weight: 700; background: #dbeafe; color: #1e3a5f; border-bottom: 2px solid #1e3a5f; }
+.key-numbers { display: flex; gap: 20px; margin: 20px 0 28px; }
+.key-num { flex: 1; text-align: center; padding: 18px 12px; background: #f0f7ff; border-radius: 10px; border: 1px solid #dbeafe; }
+.key-num .val { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 800; color: #2563eb; }
+.key-num .lbl { font-size: 12px; color: #6b7280; margin-top: 4px; font-family: 'Inter', sans-serif; }
+.anomaly { padding: 14px 18px; border-radius: 8px; margin-bottom: 14px; display: flex; gap: 14px; align-items: flex-start; }
+.anomaly.critical { background: #fef2f2; border-left: 4px solid #ef4444; }
+.anomaly.high { background: #fff7ed; border-left: 4px solid #f97316; }
+.anomaly.medium { background: #fefce8; border-left: 4px solid #eab308; }
+.anomaly .badge { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; color: #fff; flex-shrink: 0; margin-top: 3px; }
+.anomaly .badge.critical { background: #ef4444; }
+.anomaly .badge.high { background: #f97316; }
+.anomaly .badge.medium { background: #eab308; }
+.anomaly .content { font-size: 14px; line-height: 1.6; }
+.anomaly .content strong { color: #1e3a5f; }
+.reco { padding: 14px 18px; background: #f0fdf4; border-left: 4px solid #22c55e; border-radius: 8px; margin-bottom: 12px; font-size: 14px; }
+.reco strong { color: #166534; }
+.footer { margin-top: 48px; padding-top: 20px; border-top: 2px solid #e5e7eb; font-family: 'Inter', sans-serif; font-size: 11px; color: #9ca3af; text-align: center; }
+@media print {
+  body { background: #fff; }
+  .page { box-shadow: none; padding: 40px 48px; }
+  h2 { page-break-after: avoid; }
+  table, .anomaly, .reco { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>&#x1F3DB;&#xFE0F; Bilan Retraite &mdash; Martin Dupont</h1>
+      <p>Rapport d'analyse compl&egrave;te des droits &agrave; la retraite</p>
+    </div>
+    <div class="header-right">
+      <div class="brand">RetraiteIA</div>
+      <div class="date">17 mars 2026</div>
+    </div>
+  </div>
+
+  <h2><span class="num">1.</span> Synth&egrave;se</h2>
+  <p>Ce rapport pr&eacute;sente l'analyse compl&egrave;te du dossier retraite de M. Martin Dupont, g&eacute;n&eacute;r&eacute;e par intelligence artificielle &agrave; partir des documents fournis (relev&eacute;s de carri&egrave;re, bulletins de paie, attestations employeurs).</p>
+
+  <div class="key-numbers">
+    <div class="key-num"><div class="val">39</div><div class="lbl">Ann&eacute;es de carri&egrave;re</div></div>
+    <div class="key-num"><div class="val">156</div><div class="lbl">Trimestres valid&eacute;s</div></div>
+    <div class="key-num"><div class="val">5</div><div class="lbl">Anomalies d&eacute;tect&eacute;es</div></div>
+    <div class="key-num"><div class="val">2 611 &euro;</div><div class="lbl">Pension estim&eacute;e / mois</div></div>
+  </div>
+
+  <h2><span class="num">2.</span> Parcours professionnel</h2>
+  <p>Le parcours de M. Dupont s'&eacute;tend sur 39 ann&eacute;es (1985&ndash;2024), au sein de 6 employeurs distincts dans les secteurs bancaire, assurantiel, du conseil et de l'ind&eacute;pendant.</p>
+
+  <table>
+    <thead>
+      <tr><th>P&eacute;riode</th><th>Employeur</th><th>Poste</th><th>Salaire annuel brut</th><th>R&eacute;gime</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1985 &ndash; 1992</td><td>Soci&eacute;t&eacute; G&eacute;n&eacute;rale</td><td>Cadre bancaire</td><td>28 500 &euro;</td><td>CNAV + AGIRC-ARRCO</td></tr>
+      <tr><td>1992 &ndash; 1998</td><td>BNP Paribas</td><td>Responsable cr&eacute;dit</td><td>42 300 &euro;</td><td>CNAV + AGIRC-ARRCO</td></tr>
+      <tr><td>1998 &ndash; 2005</td><td>Ind&eacute;pendant</td><td>Consultant financier</td><td>54 100 &euro;</td><td>RSI (SSI)</td></tr>
+      <tr><td>2005 &ndash; 2012</td><td>AXA Assurances</td><td>Directeur r&eacute;gional</td><td>72 000 &euro;</td><td>CNAV + AGIRC-ARRCO</td></tr>
+      <tr><td>2012 &ndash; 2018</td><td>Cr&eacute;dit Agricole</td><td>Directeur d'agence</td><td>68 500 &euro;</td><td>CNAV + AGIRC-ARRCO</td></tr>
+      <tr><td>2018 &ndash; 2024</td><td>MAIF</td><td>Directeur commercial</td><td>85 200 &euro;</td><td>CNAV + AGIRC-ARRCO</td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="num">3.</span> Anomalies d&eacute;tect&eacute;es</h2>
+  <p>L'analyse crois&eacute;e des documents a identifi&eacute; 5 anomalies dont 1 critique impactant directement le calcul de la pension.</p>
+
+  <div class="anomaly critical">
+    <div class="badge critical">Critique</div>
+    <div class="content"><strong>4 trimestres manquants (1998&ndash;1999)</strong><br>P&eacute;riode de transition entre BNP Paribas et activit&eacute; ind&eacute;pendante non report&eacute;e sur le relev&eacute; CNAV. Impact estim&eacute; : &minus;89 &euro;/mois. <em>Action : d&eacute;poser un dossier aupr&egrave;s de la CARSAT avec les bulletins BNP Paribas et le certificat de d&eacute;but d'activit&eacute;.</em></div>
+  </div>
+  <div class="anomaly high">
+    <div class="badge high">Important</div>
+    <div class="content"><strong>&Eacute;cart de salaire 2003</strong><br>Le salaire d&eacute;clar&eacute; aupr&egrave;s du RSI (32 400 &euro;) ne correspond pas au chiffre d'affaires d&eacute;clar&eacute; (38 200 &euro;), soit un &eacute;cart de &minus;15,2%. Impact estim&eacute; : &minus;34 &euro;/mois. <em>Action : fournir les d&eacute;clarations fiscales 2003 et les bulletins originaux au RSI/SSI.</em></div>
+  </div>
+  <div class="anomaly high">
+    <div class="badge high">Important</div>
+    <div class="content"><strong>R&eacute;gime ind&eacute;pendant incomplet (2000&ndash;2002)</strong><br>Cotisations RSI partiellement enregistr&eacute;es. Seuls 8 trimestres sur 12 sont valid&eacute;s, probablement en raison de cotisations minimales insuffisantes. Impact estim&eacute; : &minus;47 &euro;/mois. <em>Action : demander un rachat de trimestres au SSI ou fournir les justificatifs de cotisations.</em></div>
+  </div>
+  <div class="anomaly medium">
+    <div class="badge medium">Mineur</div>
+    <div class="content"><strong>Doublon trimestre T3 2012</strong><br>Le troisi&egrave;me trimestre 2012 est comptabilis&eacute; &agrave; la fois par le Cr&eacute;dit Agricole et par la MAIF. Ce doublon sera automatiquement corrig&eacute; par la CNAV mais m&eacute;rite v&eacute;rification. <em>Impact estim&eacute; : aucun.</em></div>
+  </div>
+  <div class="anomaly medium">
+    <div class="badge medium">Mineur</div>
+    <div class="content"><strong>Points AGIRC-ARRCO non report&eacute;s 2015</strong><br>847 points AGIRC-ARRCO acquis en 2015 ne figurent pas sur le relev&eacute;, probablement d&ucirc; &agrave; un retard de report par la caisse compl&eacute;mentaire du Cr&eacute;dit Agricole. Impact estim&eacute; : &minus;12 &euro;/mois. <em>Action : contacter l'AGIRC-ARRCO avec le relev&eacute; de points et les bulletins 2015.</em></div>
+  </div>
+
+  <h2><span class="num">4.</span> Estimation des droits</h2>
+  <p>La pension mensuelle estim&eacute;e &agrave; taux plein (64 ans et 6 mois) s'&eacute;l&egrave;ve &agrave; <strong>2 611 &euro;</strong>, r&eacute;partie sur trois r&eacute;gimes.</p>
+
+  <table>
+    <thead>
+      <tr><th>R&eacute;gime</th><th>Montant mensuel</th><th>Part</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>CNAV (R&eacute;gime g&eacute;n&eacute;ral)</td><td>1 485 &euro;</td><td>56,9%</td></tr>
+      <tr><td>AGIRC-ARRCO (Compl&eacute;mentaire)</td><td>892 &euro;</td><td>34,2%</td></tr>
+      <tr><td>RSI (Ind&eacute;pendants)</td><td>234 &euro;</td><td>8,9%</td></tr>
+      <tr class="total"><td>Total</td><td>2 611 &euro;</td><td>100%</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>Projections selon l'&acirc;ge de d&eacute;part :</strong></p>
+  <table>
+    <thead>
+      <tr><th>&Acirc;ge de d&eacute;part</th><th>Pension mensuelle</th><th>D&eacute;cote / Surcote</th><th>Pension annuelle</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>62 ans</td><td>2 180 &euro;</td><td>&minus;16,5% (d&eacute;cote)</td><td>26 160 &euro;</td></tr>
+      <tr><td>64 ans 6 mois</td><td>2 611 &euro;</td><td>Taux plein</td><td>31 332 &euro;</td></tr>
+      <tr><td>67 ans</td><td>3 045 &euro;</td><td>+16,6% (surcote)</td><td>36 540 &euro;</td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="num">5.</span> Recommandations</h2>
+
+  <div class="reco"><strong>1. R&eacute;gulariser les 4 trimestres manquants</strong> &mdash; D&eacute;poser un dossier aupr&egrave;s de la CARSAT avec les bulletins BNP Paribas (d&eacute;c. 1998) et le certificat de d&eacute;but d'activit&eacute; ind&eacute;pendante. Gain potentiel : +89 &euro;/mois.</div>
+  <div class="reco"><strong>2. Corriger l'&eacute;cart de salaire 2003</strong> &mdash; Fournir les d&eacute;clarations fiscales 2003 et les bulletins originaux au RSI/SSI pour rectifier la base de calcul. Gain potentiel : +34 &euro;/mois.</div>
+  <div class="reco"><strong>3. Compl&eacute;ter les cotisations RSI 2000&ndash;2002</strong> &mdash; Demander un rachat de trimestres au SSI (co&ucirc;t estim&eacute; : 4 200 &euro;) ou fournir les justificatifs de cotisations minimales. Gain potentiel : +47 &euro;/mois.</div>
+  <div class="reco"><strong>4. R&eacute;clamer les 847 points AGIRC-ARRCO</strong> &mdash; Contacter l'AGIRC-ARRCO avec le relev&eacute; de points et les bulletins du Cr&eacute;dit Agricole 2015 pour demander le report. Gain potentiel : +12 &euro;/mois.</div>
+
+  <div class="footer">
+    Document g&eacute;n&eacute;r&eacute; automatiquement par RetraiteIA &mdash; 17 mars 2026<br>
+    Ce rapport est fourni &agrave; titre indicatif et ne se substitue pas &agrave; un bilan officiel de la CNAV ou de l'AGIRC-ARRCO.
+  </div>
+
+</div>
+</body>
+</html>`;
+    triggerDownload(html, filename);
+  });
+}
+
+// Drag and drop visual feedback
+const dropzone = document.getElementById('dropzone');
+dropzone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropzone.style.borderColor = '#2563eb';
+  dropzone.style.background = '#dbeafe';
+});
+dropzone.addEventListener('dragleave', () => {
+  dropzone.style.borderColor = '';
+  dropzone.style.background = '';
+});
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.style.borderColor = '';
+  dropzone.style.background = '';
+});
+
+// Slide zoom functionality
+const slideDescriptions = [
+  { title: 'Page de couverture', content: 'Slide d\'introduction avec le logo RetraiteIA, le nom du bénéficiaire (Martin Dupont) et la date de génération du rapport. Fond bleu marine institutionnel.' },
+  { title: 'Synthèse de carrière', content: 'Timeline visuelle des 6 employeurs sur 39 ans (1985-2024). Chiffres clés : 156 trimestres validés, 3 régimes de retraite identifiés. Tableau détaillé des postes et périodes.' },
+  { title: 'Anomalies détectées', content: '5 anomalies identifiées par l\'analyse IA : 1 critique (4 trimestres manquants), 2 importantes (écart salaire, RSI incomplet), 2 mineures. Impact total : -182 €/mois.' },
+  { title: 'Estimation des droits', content: 'Projection de pension selon 3 scénarios : 2 180 € à 62 ans (décote), 2 611 € à 64 ans 6 mois (taux plein), 3 045 € à 67 ans (surcote). Répartition par régime détaillée.' }
+];
+
+document.querySelectorAll('.slide-card').forEach((card, i) => {
+  card.addEventListener('click', () => {
+    const overlay = document.getElementById('slideZoomOverlay');
+    const content = document.getElementById('slideZoomContent');
+    const desc = slideDescriptions[i];
+    const preview = card.querySelector('.slide-preview');
+    content.innerHTML =
+      '<div style="margin-bottom:1rem;"><span style="font-size:0.75rem;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.05em;">Slide ' + (i+1) + ' sur 4</span></div>' +
+      '<div style="background:var(--gray-50);border-radius:var(--radius);padding:2rem;margin-bottom:1.5rem;min-height:180px;display:flex;align-items:center;justify-content:center;">' +
+        preview.innerHTML +
+      '</div>' +
+      '<h3 style="font-size:1.1rem;font-weight:700;color:var(--blue-900);margin-bottom:0.5rem;">' + desc.title + '</h3>' +
+      '<p style="font-size:0.9rem;color:var(--gray-600);line-height:1.7;">' + desc.content + '</p>';
+    overlay.classList.add('visible');
+  });
+});
+
+function closeSlideZoom(e) {
+  const overlay = document.getElementById('slideZoomOverlay');
+  if (e.target === overlay || e.target.closest('.slide-zoom-close')) {
+    overlay.classList.remove('visible');
+  }
+}
+
+// Anomaly action handlers
+function handleAnomaly(btn, action) {
+  const card = btn.closest('.anomaly-card');
+  const actionsDiv = btn.closest('.anomaly-actions');
+  if (action === 'corriger') {
+    actionsDiv.innerHTML = '<div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;font-weight:600;color:#16a34a;"><i class="fa-solid fa-circle-check"></i> Correction initiée — dossier en cours de constitution</div>';
+    card.style.opacity = '0.7';
+  } else if (action === 'signaler') {
+    actionsDiv.innerHTML = '<div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;font-weight:600;color:#2563eb;"><i class="fa-solid fa-flag"></i> Signalé — en attente de traitement</div>';
+  } else if (action === 'ignorer') {
+    card.style.transition = 'opacity 0.4s, transform 0.4s';
+    card.style.opacity = '0';
+    card.style.transform = 'translateX(40px)';
+    setTimeout(() => { card.style.display = 'none'; }, 400);
+  }
+}
+
+// Update progress ring during pipeline
+function updateProgress(pct) {
+  const circumference = 2 * Math.PI * 12; // r=12
+  const offset = circumference - (pct / 100) * circumference;
+  document.querySelector('.progress-ring-value').style.strokeDashoffset = offset;
+  const pctText = document.getElementById('progress-pct-text');
+  if (pctText) pctText.textContent = pct + '%';
+}
+
+// Patch launchPipeline to update progress
+const _origLaunch = launchPipeline;
+launchPipeline = async function() {
+  if (pipelineRunning) return;
+  pipelineRunning = true;
+
+  const btn = document.getElementById('btn-launch');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Analyse en cours...';
+  btn.style.opacity = '0.7';
+
+  const panel = document.getElementById('log-panel');
+  panel.innerHTML = '';
+
+  for (let i = 1; i <= 4; i++) {
+    setAgentState(i, 'waiting');
+    document.getElementById('status-' + i).className = 'agent-status status-waiting';
+    document.getElementById('status-' + i).innerHTML = '<i class="fa-solid fa-clock"></i> En attente';
+  }
+  for (let i = 1; i <= 3; i++) setArrowState(i, '');
+
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  let logIndex = 0;
+  let timeOffset = 0;
+
+  updateProgress(10);
+
+  // Agent 1
+  setAgentState(1, 'active');
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(700);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(700);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(600);
+  setAgentState(1, 'done');
+  updateProgress(30);
+
+  setArrowState(1, 'animating');
+  await wait(500);
+  setArrowState(1, 'done');
+
+  // Agent 2
+  setAgentState(2, 'active');
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(600);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(700);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(500);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(400);
+  setAgentState(2, 'done');
+  updateProgress(55);
+
+  setArrowState(2, 'animating');
+  await wait(500);
+  setArrowState(2, 'done');
+
+  // Agent 3
+  setAgentState(3, 'active');
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(600);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(700);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(500);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(400);
+  setAgentState(3, 'done');
+  updateProgress(78);
+
+  setArrowState(3, 'animating');
+  await wait(500);
+  setArrowState(3, 'done');
+
+  // Agent 4
+  setAgentState(4, 'active');
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(600);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(700);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(500);
+  addLog(logIndex++, timeOffset); timeOffset++;
+  await wait(400);
+  setAgentState(4, 'done');
+  updateProgress(100);
+
+  btn.innerHTML = '<i class="fa-solid fa-check"></i> Analyse terminée';
+  btn.style.background = '#16a34a';
+  btn.style.opacity = '1';
+
+  await wait(2000);
+  btn.innerHTML = '<i class="fa-solid fa-play"></i> Relancer l\'analyse';
+  btn.style.background = '';
+  btn.disabled = false;
+  btn.style.opacity = '';
+  pipelineRunning = false;
+};
+</script>
+</body>
+</html>
